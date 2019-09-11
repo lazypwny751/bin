@@ -15,7 +15,7 @@ readonly CYAN=$(tput setaf 6)
 readonly WHITE=$(tput setaf 7)
 
 readonly DIRS=($(find "$HOME"\
-		      -maxdepth 8\
+		      -maxdepth 10\
 		      -type d\
 		      \(\
 		      -path ~/AppData -o\
