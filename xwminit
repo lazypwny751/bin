@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+LIB="$DIR/lib/bash"
+source "$LIB/colors"
+
+show_menu() {
+    local error="$1"
+
+    echo "${MAGENTA}WHAT DO?${NC}"
+    echo "${BLUE}--> (${YELLOW}E${BLUE})${CYAN}macs"
+    echo "${BLUE}--> (${YELLOW}S${BLUE})${CYAN}hell"
+    echo "${BLUE}--> (${YELLOW}T${BLUE})${CYAN}mux"
+    echo "${BLUE}--> (${YELLOW}X${BLUE})${CYAN}org"
+    [[ -n "$error" ]] && echo "${RED}$error${NC}"
+    read -n 1 -rep "${BLUE}--> ${NC}" opt # -n 2 option means no carriage return necessary
+}
+
+xwminit() {
+    local error=""
+
+    until [[ $opt == [qQ] ]]; do  # keep asking until q
+	clear
+	show_menu "$error"
+	case $opt in
+	    e|E) exec emacsclient -t -c -a ""
+		 ;;
+	    s|S) clear; exit 0
+		 ;;
+	    t|T) exec tmux
+		 ;;
+	    x|X) exec startx
+		 ;;
+	    *)  error="Are you on drugs?"
+		;;
+	esac
+    done
+}
+
+xwminit

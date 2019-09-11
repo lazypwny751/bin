@@ -1,0 +1,41 @@
+- name: Install Python 3 PyPi pips
+  hosts: localhost
+  tasks:
+  - name: Installing remote pips
+    pip:
+      name:
+        - autopep8
+        - black
+        - flake8
+        - flask
+        - importmagic
+        - jedi
+        - jupyter
+        - requests
+        - rope
+        - setuptools
+        - twine
+        - virtualenv
+        - wheel
+        - yapf
+        - pylint
+        - xonsh
+      state: present
+      executable: pip3
+  - name: Finding local pips
+    find:
+      paths: '{{ansible_env.HOME}}/src'
+      excludes: '*/\.*'
+      hidden: no
+      patterns: 'setup.py'
+      # file_type: directory
+      recurse: yes
+    register: found
+  - name: Installing local pips
+    pip:
+      name: '{{item.path | dirname}}'
+      extra_args: -e
+      executable: pip3
+    with_items: '{{found.files}}'
+    loop_control:
+      label: "{{item.path | dirname}}"

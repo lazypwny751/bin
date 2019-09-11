@@ -1,0 +1,23 @@
+- name: Install the latest Terraform
+  hosts: localhost
+  become: yes
+  vars:
+    ver: "{{ version | default ('0.12.4') }}"
+    requested: "{{'v' + version | default('0.12.4') }}"
+  tasks:
+  - name: Check version of installed Go
+    shell: terraform version | head -n 1 | awk '{print $2}'
+    register: current
+    changed_when: false
+  - name: Compare installed version to requested
+    debug:
+      msg: Installed = {{current.stdout}}, Requested = {{requested}}
+  - block:
+    - name: End play if terraform versions are the same
+      meta: end_host
+      when: current.stdout == requested
+  - name: Download & extract Terraform archive
+    unarchive:
+      src: 'https://releases.hashicorp.com/terraform/{{ver}}/terraform_{{ver}}_linux_amd64.zip'
+      dest: /usr/local/bin
+      remote_src: yes

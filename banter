@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ -x /usr/bin/seq ]; then
+    PROG=/usr/bin/seq
+elif [ -x /usr/bin/jot ]; then
+    PROG=/usr/bin/jot
+fi
+
+for a in $("$PROG" 1 "$2"); do
+    echo -n "$1 "
+done
+echo

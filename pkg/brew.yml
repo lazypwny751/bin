@@ -1,0 +1,48 @@
+- name: Install Mac Brews
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Install brews
+    homebrew:
+      name:
+        - aspell
+        - bash
+        - cmatrix
+        - coreutils
+        - cowsay
+        - exiftool
+        - fortune
+        - gpg
+        - htop
+        - hunspell
+        - ispell
+        - ncdu
+        - neovim
+        - python3
+        - ipython
+        - ranger
+        - sl
+        - tmux
+        - wget
+        - youtube-dl
+      state: present
+  - name: Install casks
+    homebrew_cask:
+      name:
+        - brave-browser
+        - clipy
+        - docker
+        - emacs
+        - firefox
+        - iterm2
+        - karabiner-elements
+        - macs-fan-control
+        - mactex
+        - microsoft-office
+        - mpv
+        - onedrive
+        - powershell
+        - qbittorrent
+        - witch
+      state: present
+      sudo_password: "{{ ansible_become_pass }}"

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+URL="git@github.com:tslight"
+export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
+source "$HOME/bin/lib/bash/ask"
+source "$HOME/bin/lib/bash/colors"
+
+clone_repo() {
+    local name="$1"
+    local dest="$HOME/${name}"
+    local url="$URL/${name}.git"
+
+    if [ -d "$dest/.git" ]; then
+	echo "$url already cloned to $dest."
+    else
+	if mkdir -p "$dest"; then
+	    if git clone -q "$url" "$dest"; then
+		echo "Successfully cloned $url."
+	    else
+		echo "Failed to clone $url."
+		exit 1
+	    fi
+	else
+	    echo "Could not create $dest."
+	    exit 1
+	fi
+    fi
+}
+
+lazypkg() {
+    case "$OSTYPE" in
+	darwin*)
+	    lazymac
+	    ;;
+	linux*)
+	    source /etc/os-release
+	    case "$ID" in
+		debian|ubuntu)
+		    "$HOME/bin/lazydeb"
+		    ;;
+		centos|fedora)
+		    "$HOME/bin/lazyrpm"
+		    ;;
+		*)
+		    echo "$ID not supported"
+		    ;;
+	    esac
+	    ;;
+	*)
+	    "$OSTYPE not supported"
+	    ;;
+    esac
+}
+
+main() {
+    command -v git &> /dev/null || sudo apt install git
+    clone_repo "bin"
+    ask "Clone all repos?" && lazygit clone tslight
+    ask "Manage packages?" && lazypkg
+    ask "Configure Emacs?" && tangle.sh
+}
+
+main "$@"

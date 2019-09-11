@@ -1,0 +1,16 @@
+- name: Install snaps
+  hosts: localhost
+  become: yes
+  tasks:
+  - name: Installing classic snaps
+    snap:
+      name:
+        - powershell
+        - powershell-preview
+      classic: yes
+      state: present
+  - name: Installing normal snaps
+    snap:
+      name:
+        - fast
+      state: present

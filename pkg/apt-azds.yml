@@ -1,0 +1,29 @@
+- name: Install Microsoft Data Studio
+  hosts: localhost
+  become: yes
+  vars:
+    baseurl: https://github.com/microsoft/azuredatastudio/releases/download
+    requested: "{{version | default('1.10.0')}}"
+  tasks:
+  - name: Check currently installed version
+    shell: /usr/bin/azuredatastudio -version | head -n 1
+    register: current
+    changed_when: false
+  - name: Compare installed version to requested
+    debug:
+      msg: Installed = {{current.stdout}}, Requested = {{requested}}
+  - block:
+    - name: End play if versions are the same
+      meta: end_host
+      when: current.stdout == requested
+  - name: Remove old package
+    apt:
+      pkg:
+        - azuredatastudio
+      state: absent
+      purge: yes
+      autoremove: yes
+      autoclean: yes
+  - name: Install Microsoft Data Studio
+    apt:
+      deb: '{{baseurl}}/{{requested}}/azuredatastudio-linux-{{requested}}.deb'

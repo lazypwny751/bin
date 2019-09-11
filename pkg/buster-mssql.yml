@@ -1,0 +1,37 @@
+- name: Install & configure Microsoft SQL CLI tools
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+  - name: Installing old version of libssl
+    apt:
+      deb: http://ftp.uk.debian.org/debian/pool/main/o/openssl1.0/libssl1.0.2_1.0.2r-1~deb9u1_amd64.deb
+  - name: Fetching GPG key
+    apt_key:
+      url: "https://packages.microsoft.com/keys/microsoft.asc"
+      state: present
+  - name: Adding Microsoft sources list
+    apt_repository:
+      repo: deb [arch=amd64] https://packages.microsoft.com/debian/9/prod stretch main
+      state: present
+      filename: mssql
+      update_cache: yes
+  - name: Installing MSSQL tools
+    apt:
+      pkg:
+        - msodbcsql17 # apt-cache depends mssql-tools
+        - mssql-tools
+      state:
+        present
+    environment:
+      ACCEPT_EULA: "Y"
+  - name: Installing unixodbc development headers
+    apt:
+      pkg:
+        - unixodbc-dev
+      state:
+        present
+  - name: Linking MSSQL tools to /usr/local/bin
+    shell: ln -fs /opt/mssql-tools/bin/* /usr/local/bin
+    args:
+      warn: false

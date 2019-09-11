@@ -1,0 +1,26 @@
+- name: Install Debian Buster MacBook packages
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+  - name: Removing packages
+    apt:
+      pkg:
+        - b43-cutter
+        - firmware-b43-installer
+      state: absent
+      purge: yes
+      autoremove: yes
+      autoclean: yes
+  - name: Installing packages
+    apt:
+      pkg:
+        - linux-headers-$(uname -r)
+        - broadcom-sta-common
+        - broadcom-sta-source
+        - broadcom-sta-dkms
+        # - firmware-b43-installer
+        - mbpfan
+        # - xserver-xorg-input-mtrack
+      state: present
+      update_cache: yes

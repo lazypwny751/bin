@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+PARENT="/Volumes/C$/Program Files/WindowsPowershell"
+
+lazyfindgit "$PARENT" add -A
+lazyfindgit "$PARENT" commit -m "lazygit"
+lazyfindgit "$PARENT" push

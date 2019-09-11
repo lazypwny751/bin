@@ -1,0 +1,116 @@
+- name: Install packages with apt
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+  - name: Removing packages
+    apt:
+      pkg:
+        - lightdm
+        - nano
+        - vim-tiny
+        - vim-common
+        - vim-runtime
+        - plymouth
+      state: absent
+      purge: yes
+      autoremove: yes
+      autoclean: yes
+  - name: Upgrade all packages
+    apt:
+      upgrade: dist
+      update_cache: yes
+  - name: Installing packages
+    apt:
+      pkg:
+        - acpi
+        - alttab
+        - ansible
+        - aptitude
+        - arandr
+        - arc-theme
+        - aspell
+        - bash-completion
+        - build-essential
+        - cmatrix
+        - cmus
+        - cowsay
+        - curl
+        - ed
+        - flatpak
+        - fortunes-off
+        - gimp
+        - git
+        - gdebi
+        - gpg
+        - htop
+        - hunspell
+        - inkscape
+        - intel-microcode
+        - inxi
+        - ipython3
+        - ispell
+        - jq
+        - jwm
+        - libimage-exiftool-perl
+        - libreoffice
+        - libxml2-utils
+        - lshw
+        - mlocate
+        - mpv
+        - mupdf
+        - ncdu
+        - neovim
+        - network-manager-fortisslvpn
+        - network-manager-openconnect
+        - network-manager-fortisslvpn-gnome
+        - network-manager-openconnect-gnome
+        - openconnect
+        - openfortivpn
+        - openjdk-11-jdk
+        - papirus-icon-theme
+        - physlock
+        - powertop
+        - psmisc
+        - python3
+        - python3-pip
+        - qbittorrent
+        - ranger
+        - ratpoison
+        - remmina
+        - rtorrent
+        - rxvt-unicode-256color
+        - sct
+        - shellcheck
+        - silversearcher-ag
+        - snapd
+        - sl
+        - sbcl
+        - spacefm
+        - stterm
+        - suckless-tools
+        - sxiv
+        - terminator
+        - texlive
+        - texlive-latex-extra
+        - thermald
+        - tint2
+        - tlp
+        - tmux
+        - tree
+        - vlc
+        - wmctrl
+        - wget
+        - xautolock
+        - xbacklight
+        - xclip
+        - xidle
+        - xinput
+        - xmonad
+        - xorg
+        - xsel
+        - xterm
+        - youtube-dl
+        - zathura
+        - zsh
+      state: present

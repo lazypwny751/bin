@@ -1,0 +1,37 @@
+- name: Install the latest Go
+  hosts: localhost
+  become: yes
+  vars:
+    number: "{{version | default('1.12.7')}}"
+    requested: "{{'go' + number }}"
+    go_path: /usr/local
+  tasks:
+  - name: Check version of installed Go
+    shell: /usr/local/go/bin/go version | awk '{print $3}'
+    register: current
+    changed_when: false
+  - name: Compare installed version to requested
+    debug:
+      msg: Installed = {{current.stdout}}, Requested = {{requested}}
+  - block:
+    - name: End play if Go versions are the same
+      meta: end_host
+      when: current.stdout == requested
+  - name: Delete old Go
+    file:
+      path: '{{go_path}}/go'
+      state: absent
+  - name: Download & extract Go
+    unarchive:
+      src: https://dl.google.com/go/go{{number}}.linux-amd64.tar.gz
+      dest: '{{go_path}}'
+      remote_src: yes
+  - name: Add Go to $PATH
+    blockinfile:
+      path: /etc/profile
+      backup: yes
+      marker: "# {mark} Golang config"
+      block: |
+        export GOPATH=$HOME/go
+        export GOROOT={{go_path}}/go
+        export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
