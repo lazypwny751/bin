@@ -2,8 +2,8 @@
   hosts: localhost
   become: yes
   vars:
-    ver: "{{ version | default ('0.12.4') }}"
-    requested: "{{'v' + version | default('0.12.4') }}"
+    ver: "{{ version | default ('0.12.8') }}"
+    requested: "{{'v' + version | default('0.12.8') }}"
   tasks:
   - name: Check version of installed Go
     shell: terraform version | head -n 1 | awk '{print $2}'

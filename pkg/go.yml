@@ -2,7 +2,7 @@
   hosts: localhost
   become: yes
   vars:
-    number: "{{version | default('1.12.7')}}"
+    number: "{{version | default('1.13')}}"
     requested: "{{'go' + number }}"
     go_path: /usr/local
   tasks:
@@ -26,9 +26,18 @@
       src: https://dl.google.com/go/go{{number}}.linux-amd64.tar.gz
       dest: '{{go_path}}'
       remote_src: yes
-  - name: Add Go to $PATH
+  - name: Add Go to /etc/profile
     blockinfile:
       path: /etc/profile
+      backup: yes
+      marker: "# {mark} Golang config"
+      block: |
+        export GOPATH=$HOME/go
+        export GOROOT={{go_path}}/go
+        export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+  - name: Add Go to /etc/bash.bashrc
+    blockinfile:
+      path: /etc/bash.bashrc
       backup: yes
       marker: "# {mark} Golang config"
       block: |
