@@ -1,0 +1,26 @@
+- name: Install Miniconda
+  hosts: localhost
+  vars:
+    url: 'https://repo.anaconda.com/miniconda'
+    installer: 'Miniconda3-latest-Linux-x86_64.sh'
+    installto: "{{ansible_env.HOME}}/conda"
+  tasks:
+  - name: Download Install Script
+    get_url:
+      url: "{{url}}/{{installer}}"
+      dest: /tmp
+  - name: Check for Existing Installation
+    stat:
+      path: '{{installto}}'
+    register: miniconda
+  - name: Run Installer Script
+    shell: |
+      bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p {{installto}}
+    when: miniconda.stat.exists == false
+  - name: Update Existing Install
+    shell: |
+      bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -u -p {{installto}}
+    when: miniconda.stat.exists and miniconda.stat.isdir
+  - name: Run conda init
+    shell: |
+      {{installto}}/bin/conda init
