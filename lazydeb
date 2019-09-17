@@ -2,7 +2,7 @@
 # https://stackoverflow.com/a/246128
 DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 LIB="$DIR/lib/bash"
-PKGDIR="$DIR/pkg"
+ANSIBLE="$DIR/ansible"
 CODENAME="$(lsb_release -cs)"
 ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu $CODENAME main"
 source "$LIB/ask"
@@ -53,17 +53,17 @@ release_packages() {
 	Debian|Ubuntu)
 	    case "$codename" in
 		"buster")
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-all.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-all.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/buster-mssql.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-mssql.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-az.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-az.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 		"bionic")
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-all.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-all.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-az.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-az.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 		*)
@@ -85,7 +85,7 @@ hardware_packages() {
 	"Apple Inc.")
 	    case "$model" in
 		MacBook*)
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/buster-mbp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-mbp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
@@ -93,7 +93,7 @@ hardware_packages() {
 	"Lenovo Inc.")
 	    case "$model" in
 		ThinkPad*)
-		    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/buster-tp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-tp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
@@ -105,28 +105,28 @@ agnostic_packages() {
     local emacs_version="$1" go_version="$2"
 
     if [[ -z "$emacs_version" ]]; then
-	ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-emacs.yml" \
+	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-emacs.yml" \
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     else
-	ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-emacs.yml" \
+	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-emacs.yml" \
 			 --extra-vars "version=\"$emacs_version\"" \
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     fi
 
     if [[ -z "$go_version" ]]; then
-	ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/go.yml" \
+	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/go.yml" \
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     else
-	ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/go.yml" \
+	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/go.yml" \
 			 --extra-vars "version=\"$go_version\"" \
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     fi
 
-    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/apt-docker.yml" \
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-docker.yml" \
 		     --extra-vars "ansible_become_pass=\"$PASS\""
-    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/snap.yml" \
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/snap.yml" \
 		     --extra-vars "ansible_become_pass=\"$PASS\""
-    ansible-playbook -i "$PKGDIR/hosts" "$PKGDIR/pip.yml"
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/pip.yml"
 }
 
 main() {
