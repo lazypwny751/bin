@@ -20,8 +20,9 @@
       state: present
   - name: Adding Microsoft Azure CLI sources list
     apt_repository:
-      repo: deb https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release }} stable
+      # repo: deb https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release }} main
       # repo: deb https://packages.microsoft.com/repos/azure-cli/ cosmic main
+      repo: deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ cosmic main
       state: present
       filename: azure-cli
       update_cache: yes
@@ -29,6 +30,5 @@
     apt:
       pkg:
         - azure-cli
-        - azure-functions-core-tools
       state:
         present

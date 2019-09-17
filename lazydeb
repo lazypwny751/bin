@@ -122,6 +122,10 @@ agnostic_packages() {
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     fi
 
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/conda.yml"
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/nvm-node.yml"
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/stumpwm.yml"
+
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-docker.yml" \
 		     --extra-vars "ansible_become_pass=\"$PASS\""
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/snap.yml" \
