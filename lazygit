@@ -29,7 +29,7 @@ readonly DIRS=($(find "$HOME"\
 		      -print |\
 		     sed 's/\.git//g' 2>&1))
 
-readonly URLS=("git@github.com" "git@gitlab.com")
+readonly URLS=("git@github.com")
 
 usage () {
     echo "
@@ -214,11 +214,12 @@ clone () {
     for i in "${!REPO_URLS[@]}"; do
 	repo="${REPO_URLS[$i]}"
 	repo_name="${REPO_NAMES[$i]}"
-	if [[ "$repo_name" =~ ^bin$|^etc$|^lib$ ]]; then
-	    path="$HOME"
-	else
-	    path="$HOME/src"
-	fi
+	# if [[ "$repo_name" =~ ^bin$|^etc$|^lib$ ]]; then
+	#     path="$HOME"
+	# else
+	#     path="$HOME/src"
+	# fi
+	path="$HOME/src/github"
 	if check_clone "$repo" "$repo_name" "$path"; then
 	    echo "${MAGENTA}Cloning $repo_name...${NC}"
 	    git clone -q "$repo" "$path/$repo_name"
