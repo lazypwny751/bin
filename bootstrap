@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-URL="git@gitlab.com:tslight"
+URL="git@gitlab.com:tspub"
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
-source "$HOME/bin/lib/bash/ask"
-source "$HOME/bin/lib/bash/colors"
+source "$DIR/lib/bash/ask"
+source "$DIR/lib/bash/colors"
 
 clone_repo() {
     local name="$1"
@@ -58,7 +58,15 @@ getlazy() {
     git clone "$URL/js/lazygit" /tmp/ && \
 	cd /tmp && \
 	npm install && \
-	node ./lazygitlab.js -t "$token" -d "$dest"
+	node ./lazygitlab.js -t "$token" -d "$dest" && \
+	cd "$dest/tspub/js/lazygit" &&
+	npm link
+}
+
+cleanup() {
+    # Use "${var:?}" to ensure this never expands to /bin
+    rm -rf "${var:?HOME}/bin" &&
+	ln -sf "${HOME}/src/tspub/bin" "${HOME}/bin"
 }
 
 main() {
@@ -67,6 +75,7 @@ main() {
     ask "Manage packages?" && lazypkg
     ask "Clone all repos?" && getlazy "$1" "$2"
     ask "Configure Emacs?" && tangle.sh
+    cleanup
 }
 
 main "$@"
