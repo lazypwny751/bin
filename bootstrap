@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-URL="git@github.com:tslight"
+URL="git@gitlab.com:tslight"
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 source "$HOME/bin/lib/bash/ask"
 source "$HOME/bin/lib/bash/colors"
@@ -52,11 +52,20 @@ lazypkg() {
     esac
 }
 
+getlazy() {
+    local token="$1" dest="$2"
+
+    git clone "$URL/js/lazygit" /tmp/ && \
+	cd /tmp && \
+	npm install && \
+	node ./lazygitlab.js -t "$token" -d "$dest"
+}
+
 main() {
     command -v git &> /dev/null || sudo apt install git
     clone_repo "bin"
-    ask "Clone all repos?" && lazygit clone tslight
     ask "Manage packages?" && lazypkg
+    ask "Clone all repos?" && getlazy "$1" "$2"
     ask "Configure Emacs?" && tangle.sh
 }
 
