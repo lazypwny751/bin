@@ -31,3 +31,8 @@
         - containerd.io
       state:
         present
+  - name: Add user to docker group
+    user:
+      name: "{{ ansible_user_id }}"
+      groups: docker,lxd,sudo
+      append: yes
