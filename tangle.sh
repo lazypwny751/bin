@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+ETC="${HOME}/src/tspub/etc"
 
 usage() {
     echo "
@@ -15,14 +16,14 @@ refresh_packages () {
 
 tangle_tangles () {
     emacs -Q --batch --eval '(with-current-buffer
-			     (find-file-noselect "~/etc/emacs/site-lisp/my-tangles.org")
+			     (find-file-noselect "'$ETC'"/emacs/conf/my-tangles.org")
 				 (org-babel-tangle))'
 }
 
 tangle_all () {
     refresh_packages
     tangle_tangles
-    emacs -Q --batch -l ~/.emacs.d/site-lisp/my-tangles.el --eval '(my/tangle-all)'
+    emacs -Q --batch -l ~/.emacs.d/conf/my-tangles.el --eval '(my/tangle-all)'
 }
 
 tangle_dir () {
@@ -31,7 +32,7 @@ tangle_dir () {
     [[ -z "$dir" ]] && { echo "Invalid directory"; exit 1; }
     [[ "$dir" =~ .*emacs.* ]] && { refresh_packages; tangle_tangles; }
 
-    emacs -Q --batch -l ~/.emacs.d/site-lisp/my-tangles.el\
+    emacs -Q --batch -l ~/.emacs.d/conf/my-tangles.el\
 	  --eval '(my/tangle-directory "'$dir'")'
 }
 
