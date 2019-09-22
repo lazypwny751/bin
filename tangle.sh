@@ -15,14 +15,11 @@ refresh_packages () {
 }
 
 tangle_tangles () {
-    emacs -Q --batch --eval '(with-current-buffer
-			     (find-file-noselect "'$ETC'"/emacs/conf/my-tangles.org")
-				 (org-babel-tangle))'
+    emacs -Q --batch --eval '(with-current-buffer (find-file-noselect "~/src/tspub/etc/emacs/conf/my-tangles.org") (org-babel-tangle))'
 }
 
 tangle_all () {
-    refresh_packages
-    tangle_tangles
+    refresh_packages && tangle_tangles && \
     emacs -Q --batch -l ~/.emacs.d/conf/my-tangles.el --eval '(my/tangle-all)'
 }
 
