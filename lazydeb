@@ -122,7 +122,8 @@ agnostic_packages() {
 			 --extra-vars "ansible_become_pass=\"$PASS\""
     fi
 
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/conda.yml"
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/conda.yml" && \
+	export PATH="${HOME}/conda/bin:$PATH"
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/nvm-node.yml"
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/pip.yml"
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/stumpwm.yml"
