@@ -25,7 +25,7 @@
       pkg:
         - acpi
         - alttab
-        # - ansible
+        - ansible
         - aptitude
         - arandr
         - arc-theme
