@@ -25,7 +25,7 @@
       pkg:
         - acpi
         - alttab
-        - ansible
+        # - ansible
         - aptitude
         - arandr
         - arc-theme
@@ -60,11 +60,14 @@
         - mpv
         - mupdf
         - ncdu
+        - ngrep
         - neovim
+        - net-tools
         - network-manager-fortisslvpn
         - network-manager-openconnect
         - network-manager-fortisslvpn-gnome
         - network-manager-openconnect-gnome
+        - nmap
         - openconnect
         - openfortivpn
         - openjdk-11-jdk
@@ -102,9 +105,11 @@
         - vlc
         - wmctrl
         - wget
+        - wireshark
         - xautolock
         - xbacklight
         - xclip
+        - xfonts-terminus
         - xidle
         - xinput
         - xmonad
@@ -113,5 +118,6 @@
         - xterm
         - youtube-dl
         - zathura
+        - zenmap
         - zsh
       state: present
