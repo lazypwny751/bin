@@ -22,15 +22,23 @@ xwminit() {
 	clear
 	show_menu "$error"
 	case $opt in
-	    e|E) exec emacsclient -t -c -a ""
-		 ;;
-	    s|S) clear; exit 0
-		 ;;
-	    t|T) exec tmux
-		 ;;
-	    x|X) exec startx
-		 ;;
-	    *)  error="Are you on drugs?"
+	    e|E)
+		emacsclient -t -c -a ""
+		logout
+		;;
+	    s|S)
+		clear
+		;;
+	    t|T)
+		tmux
+		logout
+		;;
+	    x|X)
+		startx
+		logout
+		;;
+	    *)
+		error="Are you on drugs?"
 		;;
 	esac
     done
