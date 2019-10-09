@@ -42,6 +42,7 @@
         - gimp
         - git
         - gdebi
+        - gparted
         - gpg
         - htop
         - hunspell
