@@ -55,6 +55,7 @@
         - libimage-exiftool-perl
         - libreoffice
         - libxml2-utils
+        - lilyterm
         - lshw
         - mlocate
         - mpv
@@ -84,6 +85,7 @@
         - rsync
         - rtorrent
         - rxvt-unicode-256color
+        - sakura
         - sct
         - shellcheck
         - silversearcher-ag
