@@ -58,6 +58,7 @@
         - libxml2-utils
         - lilyterm
         - lshw
+        - maim
         - mlocate
         - mpv
         - mupdf
@@ -87,12 +88,14 @@
         - rtorrent
         - rxvt-unicode-256color
         - sakura
+        - sbcl
+        - scrot
         - sct
         - shellcheck
         - silversearcher-ag
         - snapd
         - sl
-        - sbcl
+        - slop
         - spacefm
         - stterm
         - suckless-tools
