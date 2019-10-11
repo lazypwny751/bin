@@ -24,3 +24,4 @@
       echo '(ql:quickload :clx-truetype)' | sbcl --load {{slpath}}
       echo '(ql:quickload :swank)' | sbcl --load {{slpath}}
       echo '(ql:quickload :quicklisp-slime-helper)' | sbcl --load {{slpath}}
+      echo '(ql:quickload :zpng)' | sbcl --load {{slpath}}
