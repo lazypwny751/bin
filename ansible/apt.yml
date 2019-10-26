@@ -1,5 +1,6 @@
 - import_playbook: apt-all.yml
 - import_playbook: apt-az.yml
 - import_playbook: apt-azds.yml
-- import_playbook: apt-emacs.yml
 - import_playbook: apt-docker.yml
+- import_playbook: apt-emacs.yml
+- import_playbook: apt-mssql.yml

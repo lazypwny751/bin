@@ -1,4 +1,4 @@
-- name: Install Debian Buster MacBook packages
+- name: Install Debian/Ubuntu MacBook packages
   hosts: localhost
   connection: local
   become: yes

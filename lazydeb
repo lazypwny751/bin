@@ -47,13 +47,10 @@ gwPuiCrkPRpoxi06ah/Q62uP3ZN4+dew1sBZdaC9kaKdOOWTqArVnaPObQgUUJFhY9wUsA==
 
 release_packages() {
     local distro="$(lsb_release --id --short)"
-    local codename="$(lsb_release --codename --short)"
 
     case "$distro" in
 	Debian|Ubuntu)
 	    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
-			     --extra-vars "ansible_become_pass=\"$PASS\""
-	    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename.yml" \
 			     --extra-vars "ansible_become_pass=\"$PASS\""
 	    ;;
 	*)
@@ -65,13 +62,12 @@ release_packages() {
 hardware_packages() {
     local make="$(cat /sys/class/dmi/id/chassis_vendor)"
     local model="$(cat /sys/class/dmi/id/product_family)"
-    local codename="$(lsb_release --codename --short)"
 
     case "$make" in
 	"Apple Inc.")
 	    case "$model" in
 		MacBook*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename-mbp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-mbp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
@@ -79,7 +75,7 @@ hardware_packages() {
 	"Lenovo Inc.")
 	    case "$model" in
 		ThinkPad*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename-tp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-tp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
