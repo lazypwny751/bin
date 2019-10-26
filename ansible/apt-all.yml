@@ -44,6 +44,7 @@
         - gdebi
         - gparted
         - gpg
+        - hardinfo
         - htop
         - hunspell
         - inkscape
@@ -84,6 +85,7 @@
         - ranger
         - ratpoison
         - remmina
+        - rlwrap
         - rsync
         - rtorrent
         - rxvt-unicode-256color

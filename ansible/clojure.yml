@@ -1,0 +1,13 @@
+- name: Install the latest Clojure
+  hosts: localhost
+  become: yes
+  vars:
+    version: "{{v | default('1.10.1.478')}}"
+  tasks:
+  - name: Download Clojure installer script
+    get_url:
+      url: https://download.clojure.org/install/linux-install-{{version}}.sh
+      dest: /tmp/linux-install-{{version}}.sh
+      mode: '0755'
+  - name: Execute the Clojure installer script
+    shell: /tmp/linux-install-{{version}}.sh
