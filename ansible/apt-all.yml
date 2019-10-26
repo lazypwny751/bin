@@ -37,6 +37,7 @@
         - cowsay
         - curl
         - ed
+        - exa
         - flatpak
         - fortunes-off
         - gimp

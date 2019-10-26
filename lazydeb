@@ -45,20 +45,6 @@ gwPuiCrkPRpoxi06ah/Q62uP3ZN4+dew1sBZdaC9kaKdOOWTqArVnaPObQgUUJFhY9wUsA==
     sudo apt update && sudo apt install ansible
 }
 
-release_packages() {
-    local distro="$(lsb_release --id --short)"
-
-    case "$distro" in
-	Debian|Ubuntu)
-	    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
-			     --extra-vars "ansible_become_pass=\"$PASS\""
-	    ;;
-	*)
-	    echo "$distro not supported."
-	    ;;
-    esac
-}
-
 hardware_packages() {
     local make="$(cat /sys/class/dmi/id/chassis_vendor)"
     local model="$(cat /sys/class/dmi/id/product_family)"
@@ -86,7 +72,8 @@ hardware_packages() {
 main() {
     command -v ansible &> /dev/null || install_ansible
     read -resp "Enter sudo password: " PASS
-    release_packages
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
+		     --extra-vars "ansible_become_pass=\"$PASS\""
     hardware_packages
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/agnostic.yml" && \
 	export PATH="${HOME}/conda/bin:$PATH"
