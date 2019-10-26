@@ -51,25 +51,10 @@ release_packages() {
 
     case "$distro" in
 	Debian|Ubuntu)
-	    case "$codename" in
-		"buster")
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-all.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-mssql.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-az.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ;;
-		"bionic")
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-all.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-az.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ;;
-		*)
-		    echo "$codename not supported."
-		    ;;
-	    esac
+	    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
+			     --extra-vars "ansible_become_pass=\"$PASS\""
+	    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename.yml" \
+			     --extra-vars "ansible_become_pass=\"$PASS\""
 	    ;;
 	*)
 	    echo "$distro not supported."
@@ -80,12 +65,13 @@ release_packages() {
 hardware_packages() {
     local make="$(cat /sys/class/dmi/id/chassis_vendor)"
     local model="$(cat /sys/class/dmi/id/product_family)"
+    local codename="$(lsb_release --codename --short)"
 
     case "$make" in
 	"Apple Inc.")
 	    case "$model" in
 		MacBook*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-mbp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename-mbp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
@@ -93,7 +79,7 @@ hardware_packages() {
 	"Lenovo Inc.")
 	    case "$model" in
 		ThinkPad*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/buster-tp.yml" \
+		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/$codename-tp.yml" \
 				     --extra-vars "ansible_become_pass=\"$PASS\""
 		    ;;
 	    esac
@@ -101,57 +87,13 @@ hardware_packages() {
     esac
 }
 
-agnostic_packages() {
-    local emacs_version="$1" go_version="$2"
-
-    if [[ -z "$emacs_version" ]]; then
-	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-emacs.yml" \
-			 --extra-vars "ansible_become_pass=\"$PASS\""
-    else
-	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-emacs.yml" \
-			 --extra-vars "version=\"$emacs_version\"" \
-			 --extra-vars "ansible_become_pass=\"$PASS\""
-    fi
-
-    if [[ -z "$go_version" ]]; then
-	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/go.yml" \
-			 --extra-vars "ansible_become_pass=\"$PASS\""
-    else
-	ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/go.yml" \
-			 --extra-vars "version=\"$go_version\"" \
-			 --extra-vars "ansible_become_pass=\"$PASS\""
-    fi
-
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/conda.yml" && \
-	export PATH="${HOME}/conda/bin:$PATH"
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/nvm-node.yml"
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/pip.yml"
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/stumpwm.yml"
-
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-docker.yml" \
-		     --extra-vars "ansible_become_pass=\"$PASS\""
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/snap.yml" \
-		     --extra-vars "ansible_become_pass=\"$PASS\""
-}
-
 main() {
-    while getopts ":e:g:" opt; do
-	case $opt in
-	    e) emacs_version="$OPTARG"
-	       ;;
-	    g) go_version="$OPTARG"
-	       ;;
-	    \?) echo "Invalid option -$OPTARG" >&2
-		return 1
-		;;
-	esac
-    done
-
     command -v ansible &> /dev/null || install_ansible
     read -resp "Enter sudo password: " PASS
     release_packages
     hardware_packages
-    agnostic_packages "$emacs_version" "$go_version"
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/agnostic.yml" && \
+	export PATH="${HOME}/conda/bin:$PATH"
 }
 
 main "$@"
