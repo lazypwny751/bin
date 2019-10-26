@@ -75,7 +75,8 @@ main() {
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
 		     --extra-vars "ansible_become_pass=\"$PASS\""
     hardware_packages
-    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/agnostic.yml" && \
+    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/agnostic.yml" \
+		     --extra-vars "ansible_become_pass=\"$PASS\"" && \
 	export PATH="${HOME}/conda/bin:$PATH"
 }
 
