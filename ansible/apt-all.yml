@@ -49,6 +49,7 @@
         - hardinfo
         - htop
         - hunspell
+        - hwinfo
         - inkscape
         - intel-microcode
         - inxi
@@ -67,6 +68,7 @@
         - mpv
         - mupdf
         - ncdu
+        - neofetch
         - ngrep
         - neovim
         - net-tools
@@ -127,7 +129,6 @@
         - xorg
         - xsel
         - xterm
-        - youtube-dl
         - zathura
         - zenmap
         - zsh
