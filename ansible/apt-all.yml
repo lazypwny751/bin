@@ -32,6 +32,7 @@
         - aspell
         - bash-completion
         - build-essential
+        - cmake
         - cmatrix
         - cmus
         - cowsay
@@ -57,6 +58,7 @@
         - jwm
         - libimage-exiftool-perl
         - libreoffice
+        - libtool-bin
         - libxml2-utils
         - lilyterm
         - lshw

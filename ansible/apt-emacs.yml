@@ -30,7 +30,7 @@
   - name: Run autogen.sh
     command: ./autogen.sh chdir={{src}}/emacs-{{ver}}
   - name: Run configure
-    command: ./configure chdir={{src}}/emacs-{{ver}} --with-x-toolkit=lucid
+    command: ./configure chdir={{src}}/emacs-{{ver}} --with-x-toolkit=lucid --with-modules
   - name: Compile Emacs
     command: make -j4 chdir={{src}}/emacs-{{ver}}
   - name: Install Emacs
