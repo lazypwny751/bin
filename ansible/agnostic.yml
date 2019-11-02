@@ -1,8 +1,0 @@
-- import_playbook: clojure.yml
-- import_playbook: conda.yml
-- import_playbook: go.yml
-- import_playbook: nvm-node.yml
-- import_playbook: pip.yml
-- import_playbook: snap.yml
-- import_playbook: stumpwm.yml
-- import_playbook: terraform.yml

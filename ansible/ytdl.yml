@@ -1,9 +1,0 @@
-- name: Install YouTube Downloader
-  hosts: localhost
-  become: yes
-  tasks:
-  - name: Download youtube-dl to /usr/local/bin
-    get_url:
-      url: https://yt-dl.org/downloads/latest/youtube-dl
-      dest: /usr/local/bin/youtube-dl
-      mode: '0755'
