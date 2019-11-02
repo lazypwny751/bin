@@ -25,3 +25,5 @@
       echo '(ql:quickload :swank)' | sbcl --load {{slpath}}
       echo '(ql:quickload :quicklisp-slime-helper)' | sbcl --load {{slpath}}
       echo '(ql:quickload :zpng)' | sbcl --load {{slpath}}
+      echo '(ql:update-client)' | sbcl --load {{slpath}}
+      echo '(ql:update-dist "quicklisp")' | sbcl --load {{slpath}}
