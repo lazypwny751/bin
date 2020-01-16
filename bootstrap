@@ -78,12 +78,11 @@ cleanup() {
 
 main() {
     { command -v git &> /dev/null || sudo apt -y install git; } && \
-        clone_repo "bin" && \
-        update_env && \
-        ask "Manage packages?" && lazypkg && \
-        ask "Clone all repos?" && getlazy "$1" "$2" && \
-        ask "Configure Emacs?" && tangle.sh && \
-        cleanup
+        clone_repo "bin" && update_env
+    ask "Manage packages?" && lazypkg
+    ask "Clone all repos?" && getlazy "$1" "$2"
+    ask "Configure Emacs?" && tangle.sh
+    cleanup
 }
 
 main "$@"
