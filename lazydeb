@@ -2,10 +2,33 @@
 # https://stackoverflow.com/a/246128
 DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 LIB="$DIR/lib/bash"
-ANSIBLE="$HOME/src/tspub/devops/ansible"
+URL="git@gitlab.com:tspub"
+ANSIBLE="$HOME/ansible"
 CODENAME="$(lsb_release -cs)"
 ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu cosmic main"
 source "$LIB/ask"
+
+clone_repo() {
+    local name="$1"
+    local dest="$HOME/${name}"
+    local url="$URL/${name}.git"
+
+    if [ -d "$dest/.git" ]; then
+	echo "$url already cloned to $dest."
+    else
+	if mkdir -p "$dest"; then
+	    if git clone -q "$url" "$dest"; then
+		echo "Successfully cloned $url."
+	    else
+		echo "Failed to clone $url."
+		exit 1
+	    fi
+	else
+	    echo "Could not create $dest."
+	    exit 1
+	fi
+    fi
+}
 
 install_ansible() {
     echo "deb $ANSIBLE_PPA" > /tmp/ansible.list
@@ -70,6 +93,8 @@ hardware_packages() {
 }
 
 main() {
+    { command -v git &> /dev/null || sudo apt -y install git; } && \
+        clone_repo "devops/ansible"
     command -v ansible &> /dev/null || install_ansible
     read -resp "Enter sudo password: " PASS
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
