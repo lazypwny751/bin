@@ -70,8 +70,8 @@ cleanup() {
 }
 
 main() {
-    command -v git &> /dev/null || sudo apt install git
-    clone_repo "bin"
+    { command -v git &> /dev/null || sudo apt install git; } && \
+        bclone_repo "bin"
     ask "Manage packages?" && lazypkg
     ask "Clone all repos?" && getlazy "$1" "$2"
     ask "Configure Emacs?" && tangle.sh
