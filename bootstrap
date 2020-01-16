@@ -62,7 +62,7 @@ lazypkg() {
 getlazy() {
     local token="$1" dest="$2"
 
-    git clone "$URL/js/lazygit" /tmp/lazygit && \
+    { [ -d /tmp/lazygit ] || git clone "$URL/js/lazygit" /tmp/lazygit; } && \
 	cd /tmp/lazygit && \
 	npm install && \
 	node ./lazygitlab.js "$token" "$dest" && \
