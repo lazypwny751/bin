@@ -94,7 +94,7 @@ hardware_packages() {
 
 main() {
     { command -v git &> /dev/null || sudo apt -y install git; } && \
-        clone_repo "devops/ansible"
+	clone_repo "devops/ansible"
     command -v ansible &> /dev/null || install_ansible
     read -resp "Enter sudo password: " PASS
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
