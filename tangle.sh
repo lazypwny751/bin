@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-ETC="${HOME}/src/tspub/etc"
+ETC="${HOME}/src/tspub/devops/etc"
 
 usage() {
     echo "
@@ -15,7 +15,7 @@ refresh_packages () {
 }
 
 tangle_tangles () {
-    emacs -Q --batch --eval '(org-babel-load-file "~/src/tspub/etc/emacs/site-lisp/my-tangles.org")'
+    emacs -Q --batch --eval '(org-babel-load-file "'$ETC'/emacs/site-lisp/my-tangles.org")'
 }
 
 tangle_all () {
