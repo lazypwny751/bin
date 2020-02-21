@@ -70,7 +70,7 @@ get_old_manifests() {
 
     if [[ "${#OLD_MANIFESTS[@]}" -lt 1 ]]; then
 	echo "No manifests last updated before $older_than in $registry/$repository."
-	exit 0
+	return 1
     fi
 }
 
@@ -118,7 +118,7 @@ get_untagged_images() {
 
     if [[ "${#UNTAGGED_IMAGES[@]}" -lt 1 ]]; then
 	echo "No untagged/orphaned manifests in $registry/$repository."
-	exit 0
+	return 1
     fi
 }
 
@@ -146,17 +146,21 @@ delete_untagged_images() {
     fi
 }
 
+###############################################################################
+#                                     MAIN                                    #
+###############################################################################
+
 main_old() {
     [ -z "$3" ] && { printf "\nNO DATE PROVIDED!\n"; usage; exit 1; }
-    get_old_manifests "$@"
-    show_old_manifests "$@"
-    delete_old_manifests "$@"
+    get_old_manifests "$@" && \
+	show_old_manifests "$@" && \
+	delete_old_manifests "$@"
 }
 
 main_untagged() {
-    get_untagged_images "$@"
-    show_untagged_images "$@"
-    delete_untagged_images "$@"
+    get_untagged_images "$@" && \
+	show_untagged_images "$@" && \
+	delete_untagged_images "$@"
 }
 
 main() {
