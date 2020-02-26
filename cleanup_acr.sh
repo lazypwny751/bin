@@ -8,6 +8,7 @@
 #
 # https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auto-purge
 # https://docs.microsoft.com/en-us/azure/container-registry/container-registry-tasks-scheduled
+#
 
 usage() {
     echo "
@@ -185,6 +186,9 @@ main() {
 		;;
 	esac
     done
+
+    # date defaults to 1 month ago
+    [[ -z "$date" ]] && date="$(date --date="$(date +%Y-%m-%d) -1 month" '+%Y-%m-%d')"
 
     if [ "${#functions[@]}" -lt 1 ]; then
 	printf "\nNothing to do!\n"
