@@ -21,6 +21,7 @@ def chkpath(path):
 
 def get_args():
     parser = argparse.ArgumentParser()
+
     parser.add_argument(
         "-s",
         "--gitroot",
@@ -38,6 +39,7 @@ def get_args():
     parser.add_argument(
         "-v", "--verbosity", action="count", default=0, help="increase output verbosity"
     )
+
     return parser.parse_args()
 
 
@@ -48,6 +50,7 @@ def mklog(verbosity):
         loglevel = logging.INFO
     else:
         loglevel = logging.WARNING
+
     logging.basicConfig(
         # filename='',
         format="%(asctime)s %(levelname)s %(message)s",
