@@ -27,15 +27,13 @@ def get_args():
         type=chkpath,
         nargs="?",
         default=f"{os.path.expanduser('~')}/src",
-        help="path to look for Git repositories in",
+        help="path to look for git repositories in",
     )
     parser.add_argument(
         "-d",
         "--backup_dest",
-        type=chkpath,
-        nargs="?",
         default=f"{os.path.expanduser('~')}/Dropbox/Documents/gitbak",
-        help="path leave backup archive in",
+        help="path to leave backup archive in",
     )
     parser.add_argument(
         "-v", "--verbosity", action="count", default=0, help="increase output verbosity"

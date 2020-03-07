@@ -20,6 +20,7 @@
 import itertools, sys, time
 
 spinner = itertools.cycle(["-", "/", "|", "\\"])
+
 while True:
     sys.stdout.write(next(spinner))  # write the next character
     sys.stdout.flush()  # flush stdout buffer (actual character display)
