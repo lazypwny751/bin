@@ -14,20 +14,7 @@ readonly MAGENTA=$(tput setaf 5)
 readonly CYAN=$(tput setaf 6)
 readonly WHITE=$(tput setaf 7)
 
-readonly DIRS=($(find "$HOME"\
-		      -maxdepth 10\
-		      -type d\
-		      \(\
-		      -path ~/AppData -o\
-		      -path ~/Library -o\
-		      -path ~/OneDrive -o\
-		      -path ~/.dbus -o\
-		      -path ~/.local\
-		      \)\
-		      -prune -o\
-		      -name ".git"\
-		      -print |\
-		     sed 's/\.git//g' 2>&1))
+readonly DIRS=($(find "$HOME" -maxdepth 10 -type d (-path ~/AppData -o-path ~/Library -o -path ~/OneDrive -o -path ~/.dbus -o -path ~/.local) -prune -o name ".git" -print | sed 's/\.git//g' 2>&1))
 
 readonly URLS=("git@github.com")
 

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+[[ -z "$DEVPATH" ]] && DEVPATH="$HOME/src/oe-developers"
+
+get_gitdirs_relpaths() {
+    RELPATHS=$(find "$DEVPATH" \
+		    -maxdepth 10 \
+		    -type d \
+		    -name ".git" \
+		    -printf "%P " | \
+		   sed 's/\/\.git//g')
+    COMPREPLY=($(compgen -W "$RELPATHS" "${COMP_WORDS[1]}"))
+}
+
+complete -F get_gitdirs_relpaths gcd
+
+alias gcd='f() { cd "$DEVPATH/$1"; }; f'
