@@ -189,13 +189,21 @@ main() {
 
     # date defaults to 1 month ago
     [[ -z "$date" ]] && date="$(date --date="$(date +%Y-%m-%d) -1 month" '+%Y-%m-%d')"
-
+    [[ -z "$image" ]] && repos=($(az acr repository list --name "$registry" --output tsv))
     if [ "${#functions[@]}" -lt 1 ]; then
 	printf "\nNothing to do!\n"
 	usage
     else
+
 	for i in "${!functions[@]}"; do
-	    ${functions[$i]} "$registry" "$image" "$date"
+	    if [[ "${#repos[@]}" -gt 0 ]]; then
+		for r in "${repos[@]}"; do
+		    echo "Running cleanup on $r..."
+		    ${functions[$i]} "$registry" "$r" "$date"
+		done
+	    else
+		${functions[$i]} "$registry" "$image" "$date"
+	    fi
 	done
     fi
 }
