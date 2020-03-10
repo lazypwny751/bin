@@ -17,7 +17,7 @@ def ftp_rmr(ftp, path, logger):
             ftp.cwd(name)
             ftp.cwd(wd)
             ftp_rmr(ftp, name, logger)
-        except ftplib.all_errors as error:
+        except ftplib.all_errors:
             try:
                 ftp.delete(name)
                 logger.debug(f"Deleted file: {name}")
