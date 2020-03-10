@@ -189,7 +189,9 @@ main() {
 
     # date defaults to 1 month ago
     [[ -z "$date" ]] && date="$(date --date="$(date +%Y-%m-%d) -1 month" '+%Y-%m-%d')"
+    # image defaults to iterating over all repos in registry
     [[ -z "$image" ]] && repos=($(az acr repository list --name "$registry" --output tsv))
+
     if [ "${#functions[@]}" -lt 1 ]; then
 	printf "\nNothing to do!\n"
 	usage
