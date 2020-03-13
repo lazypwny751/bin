@@ -6,7 +6,7 @@ elif [ -x /usr/bin/jot ]; then
     PROG=/usr/bin/jot
 fi
 
-for a in $("$PROG" 1 "$2"); do
+for i in $("$PROG" 1 "$2"); do
     echo -n "$1 "
 done
 echo
