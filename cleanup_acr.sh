@@ -196,7 +196,6 @@ main() {
 	printf "\nNothing to do!\n"
 	usage
     else
-
 	for i in "${!functions[@]}"; do
 	    if [[ "${#repos[@]}" -gt 0 ]]; then
 		for r in "${repos[@]}"; do
