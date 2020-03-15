@@ -3,11 +3,16 @@ import logging
 
 
 class SlackClient:
+    """
+    Do funky Slack stuff :-)
+    """
+
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, token, channel_name="test-channel", user="Slack Bot"):
         self.url = "https://slack.com/api/"
         self.token = token
         self.channel_name = channel_name
-        self.channels = self.__get_channels()
+        self.channels = self.get_channels_json()
         self.channel_names = [channel["name"] for channel in self.channels]
         self.channel_id = [
             channel["id"]
@@ -22,25 +27,37 @@ class SlackClient:
             "link_names": True,
         }
 
-    def __get_channels(self):
+    def get_channels_json(self):
+        """
+        Retrieve channel json objects.
+        """
         logging.debug(f"Getting all Slack channels...")
         response = requests.get(
             self.url + "conversations.list", params={"token": self.token},
         )
         return response.json()["channels"]
 
-    def __get_channel_messages(self, limit=10):
+    def get_messages_json(self, limit=10):
+        """
+        Retrieve messages json objects.
+        """
         params = self.params
         params["limit"] = limit
         response = requests.get(self.url + "conversations.history", params=params)
         return response.json()["messages"]
 
     def get_messages(self, limit=10):
+        """
+        Retrieve message strings from Slack.
+        """
         logging.info(f"Retrieving Slack messages from {self.channel_name}...")
-        messages = self.__get_channel_messages(limit)
+        messages = self.get_messages_json(limit)
         return [msg["text"] for msg in messages]
 
     def post_message(self, message):
+        """
+        Post a message to Slack.
+        """
         logging.info(f"Posting {message} to {self.channel}...")
         params = self.params
         params["text"] = message
