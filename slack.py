@@ -67,6 +67,7 @@ def get_token():
         sys.exit(1)
 
     if token:
+        logging.info(f"Found {expanduser('~')}/.slack.token")
         logging.debug(f"Token: {token}")
         return token
 
