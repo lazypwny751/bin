@@ -3,16 +3,22 @@ import logging
 
 
 class SlackClient:
-    def __init__(self, token, channel="test-channel", user="Slack Bot"):
+    def __init__(self, token, channel_name="test-channel", user="Slack Bot"):
         self.url = "https://slack.com/api/"
         self.token = token
-        self.chaname = channel
-        self.channel = self.__get_channel_id(channel)
+        self.channel_name = channel_name
+        self.channels = self.__get_channels()
+        self.channel_names = [channel["name"] for channel in self.channels]
+        self.channel_id = [
+            channel["id"]
+            for channel in self.channels
+            if channel["name"] == self.channel_name
+        ][0]
         self.user = user
         self.params = {
             "username": user,
             "token": self.token,
-            "channel": self.channel,
+            "channel": self.channel_id,
             "link_names": True,
         }
 
@@ -21,17 +27,7 @@ class SlackClient:
         response = requests.get(
             self.url + "conversations.list", params={"token": self.token},
         )
-        channels = response.json()["channels"]
-        channel_names = [chan["name"] for chan in response.json()["channels"]]
-        logging.debug(f"Slack channels: " + ", ".join(channel_names))
-        return channels
-
-    def __get_channel_id(self, channel_name):
-        logging.debug(f"Looking for {channel_name} channel...")
-        channels = self.__get_channels()
-        channel_id = [ch["id"] for ch in channels if ch["name"] == channel_name][0]
-        logging.debug(f"{channel_name} = {channel_id}")
-        return channel_id
+        return response.json()["channels"]
 
     def __get_channel_messages(self, limit=10):
         params = self.params
@@ -40,7 +36,7 @@ class SlackClient:
         return response.json()["messages"]
 
     def get_messages(self, limit=10):
-        logging.info(f"Retrieving Slack messages from {self.chaname}...")
+        logging.info(f"Retrieving Slack messages from {self.channel_name}...")
         messages = self.__get_channel_messages(limit)
         return [msg["text"] for msg in messages]
 

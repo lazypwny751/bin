@@ -20,6 +20,9 @@ def get_args():
     parser.add_argument(
         "-l", "--limit", type=int, default=10, help="limit number of retrieved messages"
     )
+    parser.add_argument(
+        "--list_channels", action="store_true", help="list available slack channels"
+    )
     parser.add_argument("-p", "--post_message", help="a message to post to slack")
     parser.add_argument("-s", "--send_command", nargs=2, help="send a slack command")
     parser.add_argument("-t", "--token", help="pass in a slack token")
@@ -98,5 +101,7 @@ if __name__ == "__main__":
         slack.post_message(args.post_message)
     elif args.get_messages:
         print("\n".join(slack.get_messages(args.limit)))
+    elif args.list_channels:
+        print("\n".join(slack.channel_names))
     elif args.send_command:
         slack.send_command(args.send_command)
