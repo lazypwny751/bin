@@ -21,7 +21,13 @@ def get_args():
         "-l", "--limit", type=int, default=10, help="limit number of retrieved messages"
     )
     parser.add_argument(
+        "--get_list_json", help="retrieve json object for a given list resource"
+    )
+    parser.add_argument(
         "--list_channels", action="store_true", help="list available slack channels"
+    )
+    parser.add_argument(
+        "--list_users", action="store_true", help="list available slack users"
     )
     parser.add_argument("-p", "--post_message", help="a message to post to slack")
     parser.add_argument("-s", "--send_command", nargs=2, help="send a slack command")
@@ -101,7 +107,11 @@ if __name__ == "__main__":
         slack.post_message(args.post_message)
     elif args.get_messages:
         print("\n".join(slack.get_messages(args.limit)))
+    elif args.get_list_json:
+        print(slack.get_list_json(args.get_list_json))
     elif args.list_channels:
         print("\n".join(slack.channel_names))
+    elif args.list_users:
+        print("\n".join(slack.get_users()))
     elif args.send_command:
         slack.send_command(args.send_command)
