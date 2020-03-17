@@ -110,5 +110,12 @@ if __name__ == "__main__":
         else:
             logging.info(f"{kudu.url}{args.endpoint} returned no data.")
     elif args.zipdeploy:
+        print(f"Deploying {args.zipdeploy} to {pp['web_url']}.. ", end="", flush="True")
         response = kudu.deploy_zip(args.zipdeploy)
-        print(json.dumps(response, indent=2, sort_keys=True))
+        if response == 200:
+            print(f"DONE.")
+        else:
+            print(f"FAIL.")
+            logging.warning(
+                f"Deploying {args.zipdeploy} to {pp['web_url']}. Status: {response}."
+            )

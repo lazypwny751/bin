@@ -25,13 +25,11 @@ class KuduClient:
             with open(path, "rb") as f:
                 zipfile = f.read()
 
-            logging.info(f"Deploying {path} to {self.url}")
             response = requests.put(
                 self.url + "zipdeploy", auth=self.auth, data=zipfile
             )
 
             if response.ok:
-                logging.info(f"Deployed {path} to {self.url}.")
                 return response.status_code
             logging.error(
                 f"Failed to deploy {path} on {self.url}zipdeploy\n"
