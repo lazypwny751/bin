@@ -31,6 +31,7 @@ def get_args():
         "-c", "--cmd", help="command to run (use quotes for multi-word commands)"
     )
     group.add_argument("-e", "--endpoint", help="view api endpoint")
+    group.add_argument("-z", "--zipdeploy", type=chkpath, help="deploy a zip file")
     parser.add_argument(
         "-p", "--cwd", default="site\\wwwroot", help="remote current working directory"
     )
@@ -108,3 +109,6 @@ if __name__ == "__main__":
             print(json.dumps(response, indent=2, sort_keys=True))
         else:
             logging.info(f"{kudu.url}{args.endpoint} returned no data.")
+    elif args.zipdeploy:
+        response = kudu.deploy_zip(args.zipdeploy)
+        print(json.dumps(response, indent=2, sort_keys=True))

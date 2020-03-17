@@ -20,6 +20,28 @@ class KuduClient:
         logging.debug(f"KUDU URL: {self.url}")
         logging.debug(f"USER: {user}, PASS: {passwd}")
 
+    def deploy_zip(self, path):
+        try:
+            with open(path, "rb") as f:
+                zipfile = f.read()
+
+            logging.info(f"Deploying {path} to {self.url}")
+            response = requests.put(
+                self.url + "zipdeploy", auth=self.auth, data=zipfile
+            )
+
+            if response.ok:
+                logging.info(f"Deployed {path} to {self.url}.")
+                return response.status_code
+            logging.error(
+                f"Failed to deploy {path} on {self.url}zipdeploy\n"
+                + f"Code:{response.status_code}\n"
+                + f"Response: {response.text}"
+            )
+        except Exception as error:
+            logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
+            logging.debug(traceback.format_exc())
+
     def get_endpoint(self, endpoint):
         try:
             response = requests.get(self.url + endpoint, auth=self.auth)
