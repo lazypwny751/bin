@@ -26,16 +26,21 @@ class KuduClient:
                 zipfile = f.read()
 
             response = requests.put(
-                self.url + "zipdeploy", auth=self.auth, data=zipfile
+                self.url + "zipdeploy?isAsync=true", auth=self.auth, data=zipfile
             )
 
             if response.ok:
-                return response.status_code
-            logging.error(
-                f"Failed to deploy {path} on {self.url}zipdeploy\n"
-                + f"Code:{response.status_code}\n"
-                + f"Response: {response.text}"
-            )
+                while True:
+                    logging.debug(f"Checking deployment {response.headers['Location']}")
+                    status = requests.get(response.headers["Location"], auth=self.auth)
+                    if status.json()["complete"]:
+                        return status.json()
+            else:
+                logging.error(
+                    f"Deploying {path} on {self.url}zipdeploy\n"
+                    + f"Code:{response.status_code}, Message: {response.text}"
+                )
+
         except Exception as error:
             logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
             logging.debug(traceback.format_exc())

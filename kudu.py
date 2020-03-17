@@ -112,10 +112,9 @@ if __name__ == "__main__":
     elif args.zipdeploy:
         print(f"Deploying {args.zipdeploy} to {pp['web_url']}.. ", end="", flush="True")
         response = kudu.deploy_zip(args.zipdeploy)
-        if response == 200:
+        if response["complete"]:
             print(f"DONE.")
+            logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
         else:
             print(f"FAIL.")
-            logging.warning(
-                f"Deploying {args.zipdeploy} to {pp['web_url']}. Status: {response}."
-            )
+            logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
