@@ -51,7 +51,7 @@ class KuduClient:
             if response.ok:
                 return response.json()
             logging.error(
-                f"Failed to run {cmd} on {self.url}\n"
+                f"Failed to get {endpoint} on {self.url}\n"
                 + f"Code:{response.status_code}\n"
                 + f"Response: {response.text}"
             )
