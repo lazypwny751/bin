@@ -102,4 +102,9 @@ if __name__ == "__main__":
                 + f"Message: {response['Error']}".strip()
             )
     elif args.endpoint:
-        print(json.dumps(kudu.get_endpoint(args.endpoint), indent=2, sort_keys=True))
+        response = kudu.get_endpoint(args.endpoint)
+        if response:
+            logging.info(f"{kudu.url}{args.endpoint}:")
+            print(json.dumps(response, indent=2, sort_keys=True))
+        else:
+            logging.info(f"{kudu.url}{args.endpoint} returned no data.")
