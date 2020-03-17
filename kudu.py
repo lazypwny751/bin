@@ -49,7 +49,7 @@ def get_az_details(path):
         sys.exit(1)
 
     if az_details:
-        logging.debug(f"Found {path}")
+        logging.info(f"Found Azure configuration at {path}.")
         return az_details
 
     logging.error(f"Failed to retrieve Azure details from {path}. Aborting.")
@@ -93,13 +93,11 @@ if __name__ == "__main__":
         response = kudu.run_cmd(args.cmd, args.cwd)
         logging.debug("Output:\n" + json.dumps(response, indent=2, sort_keys=True))
         if response["ExitCode"] == 0:
-            logging.info(
-                f"Successfully ran '{args.cmd}' on {pp['web_url']} in {args.cwd}."
-            )
+            logging.info(f"Ran '{args.cmd}' in {pp['web_url']}/{args.cwd}.")
             print(response["Output"].strip())
         else:
             logging.error(
-                f"Failed to run '{args.cmd}' on {pp['web_url']} in {args.cwd}\n"
+                f"Failed to run '{args.cmd}' in {pp['web_url']}/{args.cwd}\n"
                 + f"Exitcode: {response['ExitCode']} "
                 + f"Message: {response['Error']}".strip()
             )
