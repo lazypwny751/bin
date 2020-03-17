@@ -1,11 +1,19 @@
 #!/usr/bin/env python
+import json
 import logging
+import os
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentTypeError
 from configparser import ConfigParser
-from os.path import expanduser
-from lib.py.azure import get_jwt, get_creds
+from lib.py.azure import get_access_token, get_publish_profile
 from lib.py.kudu import KuduClient
+
+
+def chkpath(path):
+    if os.path.exists(path):
+        return os.path.abspath(path)
+
+    raise ArgumentTypeError(f"{path} does not exist.")
 
 
 def get_args():
@@ -13,12 +21,15 @@ def get_args():
     parser.add_argument("-a", "--app", help="azure app name")
     parser.add_argument(
         "--config",
-        default=f"{expanduser('~')}/.kudu.ini",
-        help="path to azure configuration",
+        type=chkpath,
+        default=f"{os.path.expanduser('~')}/.kudu.ini",
+        help="path to azure configuration file",
     )
     parser.add_argument("-r", "--resource_group", help="azure resource group")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-c", "--cmd", help="command to run")
+    group.add_argument(
+        "-c", "--cmd", help="command to run (use quotes for multi-word commands)"
+    )
     group.add_argument("-e", "--endpoint", help="view api endpoint")
     parser.add_argument(
         "-p", "--cwd", default="site\\wwwroot", help="remote current working directory"
@@ -39,7 +50,6 @@ def get_az_details(path):
 
     if az_details:
         logging.debug(f"Found {path}")
-        logging.debug(az_details)
         return az_details
 
     logging.error(f"Failed to retrieve Azure details from {path}. Aborting.")
@@ -70,14 +80,28 @@ if __name__ == "__main__":
     args = get_args()
     mklog(args.v)
 
-    az = get_az_details(args.config)
-    az["rg"] = args.resource_group
-
-    jwt = get_jwt(az["client_id"], az["client_secret"], az["tenant_id"])
-    creds = get_creds(az["sub_id"], az["rg"], args.app, jwt)
-    kudu = KuduClient(creds["web_url"], creds["web_user"], creds["web_passwd"])
+    try:
+        az = get_az_details(args.config)
+        token = get_access_token(az["client_id"], az["secret"], az["tenant"])
+        pp = get_publish_profile(az["sub_id"], args.resource_group, args.app, token)
+        kudu = KuduClient(pp["web_url"], pp["web_user"], pp["web_passwd"])
+    except Exception as error:
+        logging.error(error)
+        sys.exit(1)
 
     if args.cmd:
-        kudu.run_cmd(args.cmd, args.cwd)
+        response = kudu.run_cmd(args.cmd, args.cwd)
+        logging.debug("Output:\n" + json.dumps(response, indent=2, sort_keys=True))
+        if response["ExitCode"] == 0:
+            logging.info(
+                f"Successfully ran '{args.cmd}' on {pp['web_url']} in {args.cwd}."
+            )
+            print(response["Output"].strip())
+        else:
+            logging.error(
+                f"Failed to run '{args.cmd}' on {pp['web_url']} in {args.cwd}\n"
+                + f"Exitcode: {response['ExitCode']} "
+                + f"Message: {response['Error']}".strip()
+            )
     elif args.endpoint:
-        kudu.get_endpoint(args.endpoint)
+        print(json.dumps(kudu.get_endpoint(args.endpoint), indent=2, sort_keys=True))
