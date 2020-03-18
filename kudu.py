@@ -56,7 +56,7 @@ def get_args():
     parser.add_argument(
         "-p",
         "--cwd",
-        default="site\\wwwroot",
+        default="site/wwwroot",
         metavar=("PATH"),
         help="server current working directory",
     )
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         if args.cmd:
             response = kudu.run_cmd(args.cmd, args.cwd)
             logging.debug("Output:\n" + json.dumps(response, indent=2, sort_keys=True))
-            if response["ExitCode"] == 0:
+            if response["Error"] == "":
                 logging.info(f"Ran '{args.cmd}' in {pp['web_url']}/{args.cwd}.")
                 print(response["Output"].strip())
             else:
