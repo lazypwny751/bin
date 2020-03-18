@@ -20,6 +20,7 @@ def get_args():
     parser = ArgumentParser()
     parser.add_argument("-a", "--app", help="azure app name")
     parser.add_argument(
+        "-C",
         "--config",
         type=chkpath,
         default=f"{os.path.expanduser('~')}/.kudu.ini",
@@ -31,7 +32,8 @@ def get_args():
         "-c", "--cmd", help="command to run (use quotes for multi-word commands)"
     )
     group.add_argument("-e", "--endpoint", help="view api endpoint")
-    group.add_argument("-z", "--zipdeploy", type=chkpath, help="deploy a zip file")
+    group.add_argument("-z", "--deploy_zip", type=chkpath, help="deploy a zip file")
+    group.add_argument("-Z", "--download_zip", help="download a zip file")
     parser.add_argument(
         "-p", "--cwd", default="site\\wwwroot", help="remote current working directory"
     )
@@ -86,35 +88,46 @@ if __name__ == "__main__":
         token = get_access_token(az["client_id"], az["secret"], az["tenant"])
         pp = get_publish_profile(az["sub_id"], args.resource_group, args.app, token)
         kudu = KuduClient(pp["web_url"], pp["web_user"], pp["web_passwd"])
+
+        if args.cmd:
+            response = kudu.run_cmd(args.cmd, args.cwd)
+            logging.debug("Output:\n" + json.dumps(response, indent=2, sort_keys=True))
+            if response["ExitCode"] == 0:
+                logging.info(f"Ran '{args.cmd}' in {pp['web_url']}/{args.cwd}.")
+                print(response["Output"].strip())
+            else:
+                logging.error(
+                    f"Failed to run '{args.cmd}' in {pp['web_url']}/{args.cwd}\n"
+                    + f"Exitcode: {response['ExitCode']} "
+                    + f"Message: {response['Error']}".strip()
+                )
+        elif args.endpoint:
+            response = kudu.get_endpoint(args.endpoint)
+            if response:
+                logging.info(f"{kudu.url}{args.endpoint}:")
+                print(json.dumps(response, indent=2, sort_keys=True))
+            else:
+                logging.info(f"{kudu.url}{args.endpoint} returned no data.")
+        elif args.deploy_zip:
+            print(
+                f"Deploying {args.deploy_zip} to {pp['web_url']}.. ",
+                end="",
+                flush="True",
+            )
+            response = kudu.deploy_zip(args.deploy_zip)
+            if response["complete"]:
+                print(f"DONE.")
+                logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
+            else:
+                print(f"FAIL.")
+                logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
+        elif args.download_zip:
+            print(
+                f"Downloading zip from {kudu.url}{args.download_zip}.. ",
+                end="",
+                flush="True",
+            )
+            response = kudu.download_zip(args.download_zip)
     except Exception as error:
         logging.error(error)
         sys.exit(1)
-
-    if args.cmd:
-        response = kudu.run_cmd(args.cmd, args.cwd)
-        logging.debug("Output:\n" + json.dumps(response, indent=2, sort_keys=True))
-        if response["ExitCode"] == 0:
-            logging.info(f"Ran '{args.cmd}' in {pp['web_url']}/{args.cwd}.")
-            print(response["Output"].strip())
-        else:
-            logging.error(
-                f"Failed to run '{args.cmd}' in {pp['web_url']}/{args.cwd}\n"
-                + f"Exitcode: {response['ExitCode']} "
-                + f"Message: {response['Error']}".strip()
-            )
-    elif args.endpoint:
-        response = kudu.get_endpoint(args.endpoint)
-        if response:
-            logging.info(f"{kudu.url}{args.endpoint}:")
-            print(json.dumps(response, indent=2, sort_keys=True))
-        else:
-            logging.info(f"{kudu.url}{args.endpoint} returned no data.")
-    elif args.zipdeploy:
-        print(f"Deploying {args.zipdeploy} to {pp['web_url']}.. ", end="", flush="True")
-        response = kudu.deploy_zip(args.zipdeploy)
-        if response["complete"]:
-            print(f"DONE.")
-            logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
-        else:
-            print(f"FAIL.")
-            logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))

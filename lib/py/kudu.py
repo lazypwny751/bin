@@ -21,6 +21,12 @@ class KuduClient:
         logging.debug(f"USER: {user}, PASS: {passwd}")
 
     def deploy_zip(self, path):
+        """
+        https://github.com/projectkudu/kudu/wiki/REST-API#zip-deployment
+
+        Deploy from zip asynchronously. The Location header of the response
+        will contain a link to a pollable deployment status.
+        """
         try:
             with open(path, "rb") as f:
                 zipfile = f.read()
@@ -36,21 +42,37 @@ class KuduClient:
                     if status.json()["complete"]:
                         return status.json()
             else:
-                logging.error(
+                raise AssertionError(
                     f"Deploying {path} on {self.url}zipdeploy\n"
                     + f"Code:{response.status_code}, Message: {response.text}"
                 )
+        except Exception as error:
+            logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
+            logging.debug(traceback.format_exc())
 
+    def download_zip(self, path):
+        """
+        https://github.com/projectkudu/kudu/wiki/REST-API#zip
+
+        Zip up and download the specified folder. The zip doesn't include the
+        top folder itself. Make sure you include the trailing slash!
+        """
+        try:
+            response = requests.get(f"{self.url}zip/{path}", auth=self.auth)
+            return response.json()
         except Exception as error:
             logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
             logging.debug(traceback.format_exc())
 
     def get_endpoint(self, endpoint):
+        """
+        https://github.com/projectkudu/kudu/wiki/REST-API
+        """
         try:
             response = requests.get(self.url + endpoint, auth=self.auth)
             if response.ok:
                 return response.json()
-            logging.error(
+            raise AssertionError(
                 f"Failed to get {endpoint} on {self.url}\n"
                 + f"Code:{response.status_code}\n"
                 + f"Response: {response.text}"
@@ -60,13 +82,16 @@ class KuduClient:
             logging.debug(traceback.format_exc())
 
     def run_cmd(self, cmd, cwd):
+        """
+        https://github.com/projectkudu/kudu/wiki/REST-API#command
+        """
         logging.debug(f"Running {cmd} on {self.url}...")
         payload = {"command": cmd, "dir": cwd}
         try:
             response = requests.post(self.url + "command", auth=self.auth, json=payload)
             if response.ok:
                 return response.json()
-            logging.error(
+            raise AssertionError(
                 f"Failed to run {cmd} on {self.url}\n"
                 + f"Code:{response.status_code}\n"
                 + f"Response: {response.text}"
