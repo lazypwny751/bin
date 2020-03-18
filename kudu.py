@@ -33,7 +33,7 @@ def get_args():
     )
     group.add_argument("-e", "--endpoint", help="view api endpoint")
     group.add_argument("-z", "--deploy_zip", type=chkpath, help="deploy a zip file")
-    group.add_argument("-Z", "--download_zip", help="download a zip file")
+    group.add_argument("-Z", "--download_zip", nargs=2, help="download a zip file")
     parser.add_argument(
         "-p", "--cwd", default="site\\wwwroot", help="remote current working directory"
     )
@@ -122,12 +122,16 @@ if __name__ == "__main__":
                 print(f"FAIL.")
                 logging.info("\n" + json.dumps(response, indent=2, sort_keys=True))
         elif args.download_zip:
+            source, destination = args.download_zip
             print(
-                f"Downloading zip from {kudu.url}{args.download_zip}.. ",
+                f"Downloading zip from {kudu.url}{source} to {destination}.. ",
                 end="",
                 flush="True",
             )
-            response = kudu.download_zip(args.download_zip)
+            if kudu.download_zip(source, destination):
+                print("DONE.")
+            else:
+                print("FAIL.")
     except Exception as error:
         logging.error(error)
         sys.exit(1)

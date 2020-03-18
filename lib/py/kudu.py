@@ -50,7 +50,7 @@ class KuduClient:
             logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
             logging.debug(traceback.format_exc())
 
-    def download_zip(self, path):
+    def download_zip(self, source, destination):
         """
         https://github.com/projectkudu/kudu/wiki/REST-API#zip
 
@@ -58,10 +58,17 @@ class KuduClient:
         top folder itself. Make sure you include the trailing slash!
         """
         try:
-            response = requests.get(f"{self.url}zip/{path}", auth=self.auth)
-            return response.json()
+            response = requests.get(f"{self.url}zip/{source}", auth=self.auth)
+            logging.debug(response.headers)
+            zipbytes = response.content
+            zipfile = open(destination, "wb")
+            zipfile.write(zipbytes)
+            zipfile.close()
+            return response.ok
         except Exception as error:
-            logging.error(f"Failed to deploy {path} from {self.url}zipdeploy: {error}")
+            logging.error(
+                f"Failed to download zip from {self.url}zip/{source}: {error}"
+            )
             logging.debug(traceback.format_exc())
 
     def get_endpoint(self, endpoint):
