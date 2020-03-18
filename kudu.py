@@ -17,25 +17,48 @@ def chkpath(path):
 
 
 def get_args():
-    parser = ArgumentParser()
-    parser.add_argument("-a", "--app", help="azure app name")
+    parser = ArgumentParser(description="CLI Kudu API fudger")
+    parser.add_argument("-a", "--app", metavar=("NAME"), help="azure app name")
     parser.add_argument(
         "-C",
         "--config",
         type=chkpath,
+        metavar=("PATH"),
         default=f"{os.path.expanduser('~')}/.kudu.ini",
         help="path to azure configuration file",
     )
-    parser.add_argument("-r", "--resource_group", help="azure resource group")
+    parser.add_argument(
+        "-r", "--resource_group", metavar=("NAME"), help="azure resource group name"
+    )
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
-        "-c", "--cmd", help="command to run (use quotes for multi-word commands)"
+        "-c",
+        "--cmd",
+        metavar=("COMMAND"),
+        help="command to run (use quotes for multi-word commands)",
     )
-    group.add_argument("-e", "--endpoint", help="view api endpoint")
-    group.add_argument("-z", "--deploy_zip", type=chkpath, help="deploy a zip file")
-    group.add_argument("-Z", "--download_zip", nargs=2, help="download a zip file")
+    group.add_argument("-e", "--endpoint", metavar=("SLUG"), help="api endpoint slug")
+    group.add_argument(
+        "-z",
+        "--deploy_zip",
+        metavar=("PATH"),
+        type=chkpath,
+        help="upload a zip to the server",
+    )
+    group.add_argument(
+        "-Z",
+        "--download_zip",
+        default=["site/wwwroot", f"{os.path.expanduser('~')}/backup.zip"],
+        nargs=2,
+        metavar=("SOURCE", "DESTINATION"),
+        help="download a zip of a remote path",
+    )
     parser.add_argument(
-        "-p", "--cwd", default="site\\wwwroot", help="remote current working directory"
+        "-p",
+        "--cwd",
+        default="site\\wwwroot",
+        metavar=("PATH"),
+        help="server current working directory",
     )
     parser.add_argument("-v", action="count", default=0, help="increase verbosity")
     return parser.parse_args()
