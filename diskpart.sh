@@ -5,5 +5,6 @@
 [ -n "$2" ] && label="$2" || { echo "$(basename "$0") [DISK] [LABEL]"; exit 1; }
 
 sgdisk --zap-all "$disk" && partprobe "$disk" && lsblk &&
-    parted --script "$disk" mklabel gpt mkpart primary ext4 0% 100% &&
-    blockdev --getalignoff "$disk" && mkfs.ext4 -L "$label" "$disk" && lsblk
+    parted --script "$disk" mklabel gpt &&
+    parted --script mkpart primary ext4 0% 100% &&
+    blockdev --getalignoff "$disk" && mkfs.ext4 -L "$label" "${disk}1" && lsblk
