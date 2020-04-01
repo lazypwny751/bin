@@ -7,7 +7,7 @@
 sgdisk --zap-all "$disk" && \
     partprobe "$disk" && \
     parted --script "$disk" mklabel gpt && \
-    parted --script mkpart primary ext4 0% 100% && \
+    parted --script "$disk" mkpart primary ext4 0% 100% && \
     blockdev --getalignoff "$disk" && \
     mkfs.ext4 -L "$label" "${disk}1" \
     && lsblk -f
