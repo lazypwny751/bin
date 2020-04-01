@@ -9,5 +9,5 @@ sgdisk --zap-all "$disk" && \
     parted --script "$disk" mklabel gpt && \
     parted --script "$disk" mkpart primary ext4 0% 100% && \
     blockdev --getalignoff "$disk" && \
-    mkfs.ext4 -L "$label" "${disk}1" && \
+    mkfs.ext4 -L "$label" "${disk}1" -q -F && \
     sleep 4 && lsblk -f
