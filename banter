@@ -7,6 +7,10 @@ elif [ -x /usr/bin/jot ]; then
 fi
 
 for i in $("$PROG" 1 "$2"); do
-    echo -n "$1 "
+    if [ "$1" == "random" ]; then
+	echo -n "$(rword) "
+    else
+	echo -n "$1"
+    fi
 done
 echo
