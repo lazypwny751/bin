@@ -2,7 +2,7 @@
 """
 Simple ncurses pad scrolling example.
 
-Example usage: cpager.py "super long string"
+Example usage: cpager.py {1..100}
 
 Use j/k to go down/up or q to quit.
 """
@@ -15,21 +15,16 @@ import sys
 cgitb.enable(format="text")
 
 
-def main(stdscr, line):
+def main(stdscr, lines):
     maxy, maxx = stdscr.getmaxyx()
-    pad = curses.newpad(maxy, maxx)
+    pad = curses.newpad(len(lines), maxx)
     pad.keypad(True)  # use function keys
     curses.curs_set(0)  # hide the cursor
     pminrow = 0  # pad row to start displaying contents at
     while True:
-        if len(line) >= maxx:
-            split_lines = [line[i : i + maxx] for i in range(0, len(line), maxx)]
-            max_lines = len(split_lines)
-            pad.resize(max_lines, maxx)
-            for idx, line in enumerate(split_lines):
-                pad.addstr(idx, 0, line)
-        else:
-            pad.addstr(0, 0, line)
+        # draw lines
+        for idx, line in enumerate(lines):
+            pad.addstr(idx, 0, line)
 
         # refresh components
         stdscr.noutrefresh()
@@ -46,7 +41,7 @@ def main(stdscr, line):
             if pminrow > 0:
                 pminrow -= 1
         elif key == ord("j"):
-            if pminrow < max_lines - maxy:
+            if pminrow < len(lines) - maxy:
                 pminrow += 1
         elif key == curses.KEY_RESIZE:
             stdscr.erase()
@@ -55,4 +50,4 @@ def main(stdscr, line):
 
 
 if __name__ == "__main__":
-    curses.wrapper(main, sys.argv[1])
+    curses.wrapper(main, sys.argv[1:])
