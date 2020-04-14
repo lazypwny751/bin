@@ -3,7 +3,7 @@
 VOICES=($(say -v ? | awk {'print $1'}))
 
 for v in "${VOICES[@]}"; do
-    [ -z "$msg" ] && msg="Hello, my name is $v." || msg="$1"
+    [ -z "$1" ] && msg="Hello $USER, my name is $v." || msg="$1"
     title="${msg%% *}"
     osascript -e 'display notification "'"$msg"'" with title "'"$title"'"'
     osascript -e "set Volume 10"
