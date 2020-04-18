@@ -1,5 +1,6 @@
-import os
 import curses
+import os
+import re
 
 COLOR_PAIRS_CACHE = {}
 
@@ -19,6 +20,20 @@ ANSI_TO_CURSES = {
     "[94": curses.COLOR_BLUE,
     "[95": curses.COLOR_MAGENTA,
     "[96": curses.COLOR_CYAN,
+    "[0;30": curses.COLOR_BLACK,
+    "[0;31": curses.COLOR_RED,
+    "[0;32": curses.COLOR_GREEN,
+    "[0;33": curses.COLOR_YELLOW,
+    "[0;34": curses.COLOR_BLUE,
+    "[0;35": curses.COLOR_MAGENTA,
+    "[0;36": curses.COLOR_CYAN,
+    "[0;90": curses.COLOR_BLACK,
+    "[0;91": curses.COLOR_RED,
+    "[0;92": curses.COLOR_GREEN,
+    "[0;93": curses.COLOR_YELLOW,
+    "[0;94": curses.COLOR_BLUE,
+    "[0;95": curses.COLOR_MAGENTA,
+    "[0;96": curses.COLOR_CYAN,
     "[1;30": curses.COLOR_BLACK,
     "[1;31": curses.COLOR_RED,
     "[1;32": curses.COLOR_GREEN,
@@ -26,13 +41,28 @@ ANSI_TO_CURSES = {
     "[1;34": curses.COLOR_BLUE,
     "[1;35": curses.COLOR_MAGENTA,
     "[1;36": curses.COLOR_CYAN,
+    "[30;0": curses.COLOR_BLACK,
+    "[31;0": curses.COLOR_RED,
+    "[32;0": curses.COLOR_GREEN,
+    "[33;0": curses.COLOR_YELLOW,
+    "[34;0": curses.COLOR_BLUE,
+    "[35;0": curses.COLOR_MAGENTA,
+    "[36;0": curses.COLOR_CYAN,
+    "[30;1": curses.COLOR_BLACK,
+    "[31;1": curses.COLOR_RED,
+    "[32;1": curses.COLOR_GREEN,
+    "[33;1": curses.COLOR_YELLOW,
+    "[34;1": curses.COLOR_BLUE,
+    "[35;1": curses.COLOR_MAGENTA,
+    "[36;1": curses.COLOR_CYAN,
 }
 
 
 def _get_color(fg, bg):
     key = (fg, bg)
     if key not in COLOR_PAIRS_CACHE:
-        # Use the pairs from 101 and after, so there's less chance they'll be overwritten by the user
+        # Use the pairs from 101 and after, so there's less chance they'll be
+        # overwritten by the user
         pair_num = len(COLOR_PAIRS_CACHE) + 101
         curses.init_pair(pair_num, fg, bg)
         COLOR_PAIRS_CACHE[key] = pair_num
@@ -41,7 +71,7 @@ def _get_color(fg, bg):
 
 
 def _color_str_to_color_pair(color):
-    if color == "[0":
+    if color in ["[0", "[1", "[0;"]:
         fg = curses.COLOR_WHITE
     else:
         fg = ANSI_TO_CURSES[color]
@@ -51,10 +81,7 @@ def _color_str_to_color_pair(color):
 
 def _add_line(y, x, window, line):
     # split but \033 which stands for a color change
-    if "^[" in line:
-        color_split = line.split("^[")
-    else:
-        color_split = line.split("\\033")
+    color_split = re.split("\x1b|\\033|\033", line)
 
     # Print the first part of the line without color change
     default_color_pair = _get_color(curses.COLOR_WHITE, curses.COLOR_BLACK)
@@ -80,7 +107,11 @@ def _inner_addstr(window, string, y=-1, x=-1):
         y = cur_y
     if x == -1:
         x = cur_x
-    for line in string.split(os.linesep):
+
+    lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", string)
+    lines = [line for line in lines if line]
+
+    for line in lines:
         _add_line(y, x, window, line)
         # next line
         y += 1
