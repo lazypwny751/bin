@@ -8,17 +8,17 @@ def main(stdscr):
     for i in range(1, 8):
         # black background, primary colors foreground
         curses.init_pair(i, i, curses.COLOR_BLACK)
-        msg = 'Color Number' + str(i) + '\n'
+        msg = "Color Number" + str(i) + "\n"
         stdscr.addstr(msg, curses.color_pair(i))
 
         # primary colors background, white foreground
         curses.init_pair(i + 7, curses.COLOR_WHITE, i)
-        msg = 'Color Number' + str(i + 7) + '\n'
+        msg = "Color Number" + str(i + 7) + "\n"
         stdscr.addstr(msg, curses.color_pair(i + 7))
 
         # primary colors background, black foreground
         curses.init_pair(i + 14, curses.COLOR_BLACK, i)
-        msg = 'Color Number' + str(i + 14) + '\n'
+        msg = "Color Number" + str(i + 14) + "\n"
         stdscr.addstr(msg, curses.color_pair(i + 14))
     stdscr.getch()
 
