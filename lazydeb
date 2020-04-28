@@ -5,7 +5,7 @@ LIB="$DIR/lib/bash"
 URL="git@gitlab.com:tspub"
 ANSIBLE="$HOME/devops/ansible"
 CODENAME="$(lsb_release -cs)"
-ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu cosmic main"
+ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu $CODENAME main"
 source "$LIB/ask"
 
 clone_repo() {
@@ -14,19 +14,19 @@ clone_repo() {
     local url="$URL/${name}.git"
 
     if [ -d "$dest/.git" ]; then
-	echo "$url already cloned to $dest."
+        echo "$url already cloned to $dest."
     else
-	if mkdir -p "$dest"; then
-	    if git clone -q "$url" "$dest"; then
-		echo "Successfully cloned $url."
-	    else
-		echo "Failed to clone $url."
-		exit 1
-	    fi
-	else
-	    echo "Could not create $dest."
-	    exit 1
-	fi
+        if mkdir -p "$dest"; then
+            if git clone -q "$url" "$dest"; then
+                echo "Successfully cloned $url."
+            else
+                echo "Failed to clone $url."
+                exit 1
+            fi
+        else
+            echo "Could not create $dest."
+            exit 1
+        fi
     fi
 }
 
@@ -73,36 +73,36 @@ hardware_packages() {
     local model="$(cat /sys/class/dmi/id/product_family)"
 
     case "$make" in
-	"Apple Inc.")
-	    case "$model" in
-		MacBook*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-mbp.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ;;
-	    esac
-	    ;;
-	"Lenovo Inc.")
-	    case "$model" in
-		ThinkPad*)
-		    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-tp.yml" \
-				     --extra-vars "ansible_become_pass=\"$PASS\""
-		    ;;
-	    esac
-	    ;;
+        "Apple Inc.")
+            case "$model" in
+                MacBook*)
+                    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-mbp.yml" \
+                                     --extra-vars "ansible_become_pass=\"$PASS\""
+                    ;;
+            esac
+            ;;
+        "Lenovo Inc.")
+            case "$model" in
+                ThinkPad*)
+                    ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt-tp.yml" \
+                                     --extra-vars "ansible_become_pass=\"$PASS\""
+                    ;;
+            esac
+            ;;
     esac
 }
 
 main() {
     { command -v git &> /dev/null || sudo apt -y install git; } && \
-	clone_repo "devops/ansible"
+        clone_repo "devops/ansible"
     command -v ansible &> /dev/null || install_ansible
     read -resp "Enter sudo password: " PASS
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/apt.yml" \
-		     --extra-vars "ansible_become_pass=\"$PASS\""
+                     --extra-vars "ansible_become_pass=\"$PASS\""
     hardware_packages
     ansible-playbook -i "$ANSIBLE/hosts" "$ANSIBLE/agnostic.yml" \
-		     --extra-vars "ansible_become_pass=\"$PASS\"" && \
-	export PATH="${HOME}/conda/bin:$PATH"
+                     --extra-vars "ansible_become_pass=\"$PASS\"" && \
+        export PATH="${HOME}/conda/bin:$PATH"
 }
 
 main "$@"
