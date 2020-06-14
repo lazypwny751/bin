@@ -6,11 +6,14 @@ source "$LIB/colors"
 show_menu() {
     local error="$1"
 
-    echo "${MAGENTA}WHAT DO?${NC}"
-    echo "${BLUE}--> (${YELLOW}E${BLUE})${CYAN}macs"
-    echo "${BLUE}--> (${YELLOW}S${BLUE})${CYAN}hell"
-    echo "${BLUE}--> (${YELLOW}T${BLUE})${CYAN}mux"
-    echo "${BLUE}--> (${YELLOW}X${BLUE})${CYAN}org"
+    echo "${MAGENTA}Choose a session:${NC}"
+    echo "${BLUE}--> (${YELLOW}c${BLUE})${CYAN}wn"
+    echo "${BLUE}--> (${YELLOW}d${BLUE})${CYAN}efault"
+    echo "${BLUE}--> (${YELLOW}e${BLUE})${CYAN}macs"
+    echo "${BLUE}--> (${YELLOW}j${BLUE})${CYAN}wn"
+    echo "${BLUE}--> (${YELLOW}r${BLUE})${CYAN}atpoison"
+    echo "${BLUE}--> (${YELLOW}s${BLUE})${CYAN}tumpwm"
+    echo "${BLUE}--> (${YELLOW}t${BLUE})${CYAN}mux"
     [[ -n "$error" ]] && echo "${RED}$error${NC}"
     read -n 1 -rep "${BLUE}--> ${NC}" opt # -n 2 option means no carriage return necessary
 }
@@ -22,25 +25,32 @@ xwminit() {
 	clear
 	show_menu "$error"
 	case $opt in
+	    c|C)
+		startx $(command -v cwm)
+		;;
+	    d|D)
+		startx
+		;;
 	    e|E)
 		emacsclient -t -c -a ""
-		logout
 		;;
-	    s|S)
-		clear
+	    j|J)
+		startx $(command -v jwm)
 		;;
 	    t|T)
-		tmux
-		logout
+		tmux_create_or_attach
 		;;
-	    x|X)
-		startx
-		logout
+	    r|R)
+		startx $(command -v ratpoison)
+		;;
+	    s|S)
+		sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)'
 		;;
 	    *)
 		error="Are you on drugs?"
 		;;
 	esac
+        logout
     done
 }
 
