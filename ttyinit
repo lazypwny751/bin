@@ -8,7 +8,6 @@ show_menu() {
 
     echo "${MAGENTA}Choose a session:${NC}"
     echo "${BLUE}--> (${YELLOW}c${BLUE})${CYAN}wn"
-    echo "${BLUE}--> (${YELLOW}d${BLUE})${CYAN}efault"
     echo "${BLUE}--> (${YELLOW}e${BLUE})${CYAN}macs"
     echo "${BLUE}--> (${YELLOW}j${BLUE})${CYAN}wn"
     echo "${BLUE}--> (${YELLOW}r${BLUE})${CYAN}atpoison"
@@ -27,35 +26,36 @@ ttyinit() {
 	case $opt in
 	    c|C)
 		startx $(command -v cwm)
-                logout
-		;;
-	    d|D)
-		startx
-                logout
+                break
 		;;
 	    e|E)
 		emacsclient -t -c -a ""
 		;;
+	    f|F)
+		startx $(command -v fvwm)
+		;;
 	    j|J)
 		startx $(command -v jwm)
-                logout
+                break
 		;;
 	    t|T)
 		tmux -q has-session && tmux attach -d || tmux -u
 		;;
 	    r|R)
 		startx $(command -v ratpoison)
-                logout
+                break
 		;;
 	    s|S)
-		startx $(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')
-                logout
+		startx
+                break
 		;;
 	    *)
 		error="Are you on drugs?"
 		;;
 	esac
     done
+
+    logout
 }
 
 ttyinit
