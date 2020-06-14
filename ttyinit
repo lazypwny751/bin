@@ -18,7 +18,7 @@ show_menu() {
     read -n 1 -rep "${BLUE}--> ${NC}" opt # -n 2 option means no carriage return necessary
 }
 
-xwminit() {
+ttyinit() {
     local error=""
 
     until [[ $opt == [qQ] ]]; do  # keep asking until q
@@ -27,31 +27,35 @@ xwminit() {
 	case $opt in
 	    c|C)
 		startx $(command -v cwm)
+                logout
 		;;
 	    d|D)
 		startx
+                logout
 		;;
 	    e|E)
 		emacsclient -t -c -a ""
 		;;
 	    j|J)
 		startx $(command -v jwm)
+                logout
 		;;
 	    t|T)
-		tmux_create_or_attach
+		tmux -q has-session && tmux attach -d || tmux -u
 		;;
 	    r|R)
 		startx $(command -v ratpoison)
+                logout
 		;;
 	    s|S)
-		sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)'
+		startx $(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')
+                logout
 		;;
 	    *)
 		error="Are you on drugs?"
 		;;
 	esac
-        logout
     done
 }
 
-xwminit
+ttyinit
