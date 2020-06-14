@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-batstat=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage")
+batstat=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | awk '/state|percentage/ {print $2}')
 
 if [ -z $batstat ]; then
     PBAT="/sys/class/power_supply/cw2015-battery"
