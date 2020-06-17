@@ -13,6 +13,7 @@ show_menu() {
     echo "${BLUE}--> (${YELLOW}r${BLUE})${CYAN}atpoison"
     echo "${BLUE}--> (${YELLOW}s${BLUE})${CYAN}tumpwm"
     echo "${BLUE}--> (${YELLOW}t${BLUE})${CYAN}mux"
+    echo "${BLUE}--> (${YELLOW}x${BLUE})${CYAN}fce"
     echo "${BLUE}--> (${YELLOW}q${BLUE})${CYAN}uit"
     [[ -n "$error" ]] && echo "${RED}$error${NC}"
     read -n 1 -rep "${BLUE}--> ${NC}" opt # -n 2 option means no carriage return necessary
@@ -48,6 +49,10 @@ ttyinit() {
 		;;
 	    s|S)
 		startx
+                break
+		;;
+	    x|X)
+		startxfce4
                 break
 		;;
 	    *)
