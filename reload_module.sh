@@ -3,7 +3,7 @@
 
 # I use this to reload the touchpad driver on my HP ProBook that does funny
 # things after suspend. Hence the default the module value. However it could be
-# used to reload and module passed in as an argument.
+# used to reload any module passed in as an argument.
 
 NC="$(tput sgr0)"
 RED="$(tput setaf 1)"
