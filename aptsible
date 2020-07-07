@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CODENAME="$(lsb_release -cs)"
-ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu eoan main"
+ANSIBLE_PPA="http://ppa.launchpad.net/ansible/ansible/ubuntu $CODENAME main"
 
 install_ansible() {
     echo "deb $ANSIBLE_PPA" > /tmp/ansible.list
