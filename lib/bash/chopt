@@ -8,7 +8,7 @@ show_menu () {
     echo "$banner" >&2
     echo >&2
     for i in "${!options[@]}"; do
-	printf "%3d) %s\n" $((i+1)) "${options[i]}" >&2
+        printf "%3d) %s\n" $((i+1)) "${options[i]}" >&2
     done
     echo >&2
 }
@@ -23,20 +23,20 @@ chopt() {
     cr=${cr%.}
 
     while :; do
-	show_menu "$banner" "${options[@]}"
-	read -rep "$msg" input
-	if [[ "$input" =~ ^[1-9] && "$input" -le "$optcount" ]]; then
-	    index=$((input-1))
-	    selection="${options[$index]}"
-	    break
-	elif [[ "$input" =~ ^[qQ]$ ]]; then
-	    echo >&2
-	    echo "Goodbye!" >&2
-	    echo >&2
-	    exit 0
-	else
-	    msg="$input is invalid!${cr}${cr}$prompt $optstr"
-	fi
+        show_menu "$banner" "${options[@]}"
+        read -rep "$msg" input
+        if [[ "$input" =~ ^[1-9] && "$input" -le "$optcount" ]]; then
+            index=$((input-1))
+            selection="${options[$index]}"
+            break
+        elif [[ "$input" =~ ^[qQ]$ ]]; then
+            echo >&2
+            echo "Goodbye!" >&2
+            echo >&2
+            return 0
+        else
+            msg="$input is invalid!${cr}${cr}$prompt $optstr"
+        fi
     done
 
     echo "$selection"
