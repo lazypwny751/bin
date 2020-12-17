@@ -10,6 +10,7 @@ show_menu() {
     echo "${BLUE}--> (${YELLOW}c${BLUE})${CYAN}wn"
     echo "${BLUE}--> (${YELLOW}e${BLUE})${CYAN}macs"
     echo "${BLUE}--> (${YELLOW}j${BLUE})${CYAN}wn"
+    echo "${BLUE}--> (${YELLOW}o${BLUE})${CYAN}penbox"
     echo "${BLUE}--> (${YELLOW}r${BLUE})${CYAN}atpoison"
     echo "${BLUE}--> (${YELLOW}s${BLUE})${CYAN}tumpwm"
     echo "${BLUE}--> (${YELLOW}t${BLUE})${CYAN}mux"
