@@ -39,8 +39,7 @@ ttyinit() {
         clear
         show_menu "$error"
         case $opt in
-            c|C) chkstartx cwm  && break || \
-                           error="cwm not found. Pick another option."
+            c|C) chkstartx cwm  && break || error="cwm not found. Pick another option."
                  ;;
             e|E) emacsclient --tty --create-frame -a "" && break || \
                            error="emacs not found. Pick another option."
@@ -56,7 +55,9 @@ ttyinit() {
             s|S) startx "$(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')" &&  \
                        break || error="stumpwm not found. Pick another option."
                  ;;
-            t|T) tmux -q has-session && tmux attach -d || tmux -u
+            t|T) command -v tmux || { error="tmux not installed. Pick another option."; break; }
+                 tmux -q has-session && tmux attach -d || tmux -u
+                 break
                  ;;
             x|X) chkstartx startxfce4 && break || error="xfce4 not found. Pick another option."
                  ;;
