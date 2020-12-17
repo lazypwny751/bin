@@ -44,16 +44,16 @@ ttyinit() {
                 startx $(command -v openbox-session)
                 break
                 ;;
-            t|T)
-                tmux -q has-session && tmux attach -d || tmux -u
-                ;;
             r|R)
                 startx $(command -v ratpoison)
                 break
                 ;;
             s|S)
-                startx
+                startx "$(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')"
                 break
+                ;;
+            t|T)
+                tmux -q has-session && tmux attach -d || tmux -u
                 ;;
             x|X)
                 startxfce4
