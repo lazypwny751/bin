@@ -55,7 +55,7 @@ ttyinit() {
             s|S) startx "$(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')" &&  \
                        break || error="stumpwm not found. Pick another option."
                  ;;
-            t|T) command -v tmux || { error="tmux not installed. Pick another option."; break; }
+            t|T) command -v tmux || error="tmux not installed. Pick another option."
                  tmux -q has-session && tmux attach -d || tmux -u
                  break
                  ;;
