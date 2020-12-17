@@ -23,42 +23,46 @@ ttyinit() {
     local error=""
 
     until [[ $opt == [qQ] ]]; do  # keep asking until q
-	clear
-	show_menu "$error"
-	case $opt in
-	    c|C)
-		startx $(command -v cwm)
+        clear
+        show_menu "$error"
+        case $opt in
+            c|C)
+                startx $(command -v cwm)
                 break
-		;;
-	    e|E)
-		emacsclient -t -c -a ""
-		;;
-	    f|F)
-		startx $(command -v fvwm)
-		;;
-	    j|J)
-		startx $(command -v jwm)
+                ;;
+            e|E)
+                emacsclient --tty --create-frame -a ""
+                ;;
+            f|F)
+                startx $(command -v fvwm)
+                ;;
+            j|J)
+                startx $(command -v jwm)
                 break
-		;;
-	    t|T)
-		tmux -q has-session && tmux attach -d || tmux -u
-		;;
-	    r|R)
-		startx $(command -v ratpoison)
+                ;;
+            o|O)
+                startx $(command -v openbox-session)
                 break
-		;;
-	    s|S)
-		startx
+                ;;
+            t|T)
+                tmux -q has-session && tmux attach -d || tmux -u
+                ;;
+            r|R)
+                startx $(command -v ratpoison)
                 break
-		;;
-	    x|X)
-		startxfce4
+                ;;
+            s|S)
+                startx
                 break
-		;;
-	    *)
-		error="$opt is invalid (enter a yellow letter)."
-		;;
-	esac
+                ;;
+            x|X)
+                startxfce4
+                break
+                ;;
+            *)
+                error="$opt is invalid (enter a yellow letter)."
+                ;;
+        esac
     done
 
     logout
