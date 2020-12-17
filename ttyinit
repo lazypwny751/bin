@@ -20,52 +20,51 @@ show_menu() {
     read -n 1 -rep "${BLUE}--> ${NC}" opt # -n 2 option means no carriage return necessary
 }
 
+chkstartx() {
+    local cmd="$1"
+
+    path="$(command -v "$cmd")"
+
+    if [ -n "$path" ]; then
+        startx "$path"
+        return 0
+    else
+        return 1
+    fi
+}
+
 ttyinit() {
     local error=""
-
     until [[ $opt == [qQ] ]]; do  # keep asking until q
         clear
         show_menu "$error"
         case $opt in
-            c|C)
-                startx $(command -v cwm)
-                break
-                ;;
-            e|E)
-                emacsclient --tty --create-frame -a ""
-                ;;
-            f|F)
-                startx $(command -v fvwm)
-                ;;
-            j|J)
-                startx $(command -v jwm)
-                break
-                ;;
-            o|O)
-                startx $(command -v openbox-session)
-                break
-                ;;
-            r|R)
-                startx $(command -v ratpoison)
-                break
-                ;;
-            s|S)
-                startx "$(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')"
-                break
-                ;;
-            t|T)
-                tmux -q has-session && tmux attach -d || tmux -u
-                ;;
-            x|X)
-                startxfce4
-                break
-                ;;
+            c|C) chkstartx cwm  && break || \
+                           error="cwm not found. Pick another option."
+                 ;;
+            e|E) emacsclient --tty --create-frame -a "" && break || \
+                           error="emacs not found. Pick another option."
+                 ;;
+            f|F) chkstartx fvwm && break || error="fvwm not found. Pick another option."
+                 ;;
+            j|J) chkstartx jwm && break || error="jwm not found. Pick another option."
+                 ;;
+            o|O) chkstartx openbox-session && break || error="openbox not found. Pick another option."
+                 ;;
+            r|R) chkstartx ratpoison && break || error="ratpoison not found. Pick another option."
+                 ;;
+            s|S) startx "$(sbcl --eval '(require :stumpwm)' --eval '(stumpwm:stumpwm)')" &&  \
+                       break || error="stumpwm not found. Pick another option."
+                 ;;
+            t|T) tmux -q has-session && tmux attach -d || tmux -u
+                 ;;
+            x|X) chkstartx startxfce4 && break || error="xfce4 not found. Pick another option."
+                 ;;
             *)
                 error="$opt is invalid (enter a yellow letter)."
                 ;;
         esac
     done
-
     logout
 }
 
