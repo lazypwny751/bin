@@ -10,6 +10,8 @@ show_menu() {
     echo "${BLUE}--> (${YELLOW}c${BLUE})${CYAN}wn"
     echo "${BLUE}--> (${YELLOW}e${BLUE})${CYAN}macs"
     echo "${BLUE}--> (${YELLOW}j${BLUE})${CYAN}wn"
+    echo "${BLUE}--> (${YELLOW}k${BLUE})${CYAN}de-xorg"
+    echo "${BLUE}--> (${YELLOW}p${BLUE})${CYAN}lasma-wayland"
     echo "${BLUE}--> (${YELLOW}o${BLUE})${CYAN}penbox"
     echo "${BLUE}--> (${YELLOW}r${BLUE})${CYAN}atpoison"
     echo "${BLUE}--> (${YELLOW}s${BLUE})${CYAN}tumpwm"
@@ -47,6 +49,10 @@ ttyinit() {
             f|F) chkstartx fvwm && break || error="fvwm not found. Pick another option."
                  ;;
             j|J) chkstartx jwm && break || error="jwm not found. Pick another option."
+                 ;;
+            k|K) startkde && break || error="kde not found. Pick another option."
+                 ;;
+            p|P) startplasma-wayland && break || error="plasma-wayland not found. Pick another option."
                  ;;
             o|O) chkstartx openbox-session && break || error="openbox not found. Pick another option."
                  ;;
