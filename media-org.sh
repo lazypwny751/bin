@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+NC="$(tput sgr0)"
+GRN="$(tput setaf 2)"
+YEL="$(tput setaf 3)"
+CYN="$(tput setaf 6)"
+
 while getopts ":s:i:v:t:h" opt; do
     case $opt in
         h) echo "$(basename "$0") [-s [SOURCE]] [-i [IMG_DESTINATION]] [-v [VID_DESTINATION]] [-t [TAGS]]"
@@ -68,9 +73,21 @@ VID_FILE_EXT=(
     '-ext webm'
     '-ext wmv'
 )
+COMMON_OPTIONS=(
+    -recurse
+    -extractEmbedded
+    -ignoreMinorErrors
+)
 
 for tag in "${TAGS[@]}"; do
-    exiftool "-filename<$tag"  -dateFormat "$FILE_FMT"    -recurse -ext "*" "$SOURCE" -q
-    exiftool "-directory<$tag" -dateFormat "$IMG_DIR_FMT" -recurse ${IMG_FILE_EXT[*]} "$SOURCE" -q
-    exiftool "-directory<$tag" -dateFormat "$VID_DIR_FMT" -recurse ${VID_FILE_EXT[*]} "$SOURCE" -q
+    if [ -n "$( find "$SOURCE" -prune -empty 2>/dev/null )" ]; then
+        echo "${CYN}$SOURCE is empty. Nothing to do.${NC}"
+        exit 0
+    fi
+    echo "${YEL}Renaming all files in $SOURCE to $FILE_FMT using $tag... ${NC}"
+    exiftool "-filename<$tag" -dateFormat "$FILE_FMT" -ext "*" ${COMMON_OPTIONS[*]} "$SOURCE"
+    echo "${YEL}Moving all image files in $SOURCE to $IMG_DIR_FMT using $tag... ${NC}"
+    exiftool "-directory<$tag" -dateFormat "$IMG_DIR_FMT" ${IMG_FILE_EXT[*]} ${COMMON_OPTIONS[*]} "$SOURCE"
+    echo "${YEL}Moving all video files in $SOURCE to $VID_DIR_FMT using $tag... ${NC}"
+    exiftool "-directory<$tag" -dateFormat "$VID_DIR_FMT" ${VID_FILE_EXT[*]} ${COMMON_OPTIONS[*]} "$SOURCE"
 done
