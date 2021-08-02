@@ -82,7 +82,7 @@ COMMON_OPTIONS=(
 for tag in "${TAGS[@]}"; do
     if [ -n "$( find "$SOURCE" -prune -empty 2>/dev/null )" ]; then
         echo "${CYN}$SOURCE is empty. Nothing to do.${NC}"
-        exit 0
+        break
     fi
     echo "${YEL}Renaming all files in $SOURCE to $FILE_FMT using $tag... ${NC}"
     exiftool "-filename<$tag" -dateFormat "$FILE_FMT" -ext "*" ${COMMON_OPTIONS[*]} "$SOURCE"
@@ -91,3 +91,8 @@ for tag in "${TAGS[@]}"; do
     echo "${YEL}Moving all video files in $SOURCE to $VID_DIR_FMT using $tag... ${NC}"
     exiftool "-directory<$tag" -dateFormat "$VID_DIR_FMT" ${VID_FILE_EXT[*]} ${COMMON_OPTIONS[*]} "$SOURCE"
 done
+
+echo "${YEL}Checking $IMG_DESTINATION for video files...${NC}"
+find "$IMG_DESTINATION" -regex '.*\.mp4\|.*\.mov\|.*\.webm\|.*\.m4v\|.*\.mkv'
+echo "${YEL}Checking $VID_DESTINATION for image files...${NC}"
+find "$VID_DESTINATION" -regex '.*\.jpeg\|.*\.jpg\|.*\.png\|.*\.webp\|.*\.gif'
